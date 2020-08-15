@@ -1,0 +1,40 @@
+TIGRFAM	Annotation	Class
+TIGR00391	hydA	NiFe
+TIGR00736	nifR3_rel_arch	Regulatory
+TIGR00737	nifrR3_yhdG	Regulatory
+TIGR01282	nifD	Fe-Mo
+TIGR01283	nifE	Cofactor Synthesis
+TIGR01284	alt_nitrog_alpha_chain	Mo-independent
+TIGR01285	nifN	Cofactor Synthesis
+TIGR01286	nifK	Fe-Mo
+TIGR01287	nifH	Fe-Mo
+TIGR01290	nifB	Cofactor Synthesis
+TIGR01581	Mo_ABC_porter_NifC	Co-factor Transport
+TIGR01616	nitrog_assoc	Accessory
+TIGR01817	nifA	Regulatory
+TIGR01860	VNFD	Vn-Fe
+TIGR01861	ANFD	Fe-Fe
+TIGR01862	N2-ase-Ialpha	Catalytic
+TIGR01994	NifU_SUF_scaf_2	Fe-S assembly
+TIGR01999	iscU_FeS_clust_asm	Fe-S assembly
+TIGR02000	NifU_proper	Fe-S assembly
+TIGR02660	nifV_homoC_syn	Cofactor Synthesis
+TIGR02662	dinitro_DRAG	Regulatory
+TIGR02663	nifX	Accessory
+TIGR02929	anfG_nitrog	Fe-Fe
+TIGR02930	vnfG_nitrog	Vn-Fe
+TIGR02931	anfK_nitrog	Fe-Fe
+TIGR02932	vnfK_nitrog	Vn-Fe
+TIGR02933	nifM_nitrog	Accessory
+TIGR02934	nifT_nitrog	Accessory
+TIGR02935	hyp_nif_pro	Accessory
+TIGR02936	fdxN_nitrog	Accessory
+TIGR02938	nifL_nitrog	Regulatory
+TIGR02940	anfO_nitrog	Fe-only Accessory
+TIGR03402	FeS_nifS	Fe-S assembly
+TIGR03403	nifS_epsilon	Fe-S assembly
+TIGR03419	NifU_clost	Fe-S assembly
+TIGR03798	nif11_ocin_L_peptide	Regulatory
+TIGR03890	nif11_cupin	Regulatory
+TIGR04064	rSAM_nif11	Regulatory
+TIGR04103	rSAM_nif11_3	Regulatory

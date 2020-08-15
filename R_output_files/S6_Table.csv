@@ -1,0 +1,493 @@
+ID,asm_length,n_contigs,avg_cov,N50,NIF.Group,superkingdom,phylum,class,order,family,genus,species
+BCW-200001,4.71,1038, 28.7953,   7.53,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Burkholderiales,Burkholderiaceae,Acidovorax,Acidovorax wautersii
+BCW-200002,3.96, 310,147.4030, 116.20,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-200003,4.41,  37, 80.7627, 211.13,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200008,4.04,  71,145.6660, 125.31,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,Acinetobacter baylyi
+BCW-200009,4.70,  48,135.9940, 220.25,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200011,4.73, 715, 46.8037,  12.86,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Burkholderiales,Burkholderiaceae,Acidovorax,Acidovorax wautersii
+BCW-200012,4.65,  43, 56.7263, 179.27,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200013,4.66,  45, 71.2507, 175.64,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp000762975
+BCW-200014,4.92,  22, 59.9609, 481.28,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200015,4.66,  48, 82.9569, 174.55,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp000762975
+BCW-200016,4.92,  18, 95.8792, 515.23,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200017,4.89,  27, 61.6312, 368.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200018,4.86,  63, 68.9913, 176.65,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200023,4.86,  73,128.7590, 171.08,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200025,4.86,  62, 72.0948, 212.19,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200026,4.89,  24, 75.6335, 508.06,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200027,4.70,  53, 87.7625, 372.02,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200028,6.24, 685, 54.6280, 223.09,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200029,4.70,  53,107.7230, 336.48,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200030,5.82,  83, 83.3690, 161.23,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW-200031,5.16,  41, 88.9689, 554.74,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,unassigned
+BCW-200032,3.78,  83,257.3390, 100.62,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,Acinetobacter baylyi
+BCW-200033,4.37,  36, 54.0073, 335.27,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200034,4.95,  22, 88.6701, 548.40,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200035,4.95,  25, 77.9985, 448.51,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200036,4.87,  35, 95.9830, 409.14,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter braakii
+BCW-200040,4.38,  28, 82.0037, 392.37,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200041,4.86,  66, 90.1878, 176.65,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200043,4.94,  87, 53.2626, 111.19,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter mori
+BCW-200044,3.90,  50,178.4020, 177.22,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,Acinetobacter baylyi
+BCW-200046,6.80, 599, 27.4192,  21.16,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas protegens
+BCW-200047,4.70,  47,152.0330, 224.66,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200049,5.87,  41, 57.7033, 312.73,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200050,5.02,  29, 64.4150, 459.12,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200051,2.37,  28,332.8910, 227.84,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200053,5.87,  45, 51.8660, 313.78,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200054,4.70,  51, 81.4056, 336.64,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200055,4.70, 102, 40.8845,  87.15,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200056,6.24, 237, 44.6437,  62.94,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas lurida
+BCW-200057,3.43, 650, 30.3959,   8.38,DSN,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Microbacterium,unassigned
+BCW-200060,5.28, 128, 57.4308,  91.46,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200061,5.79,  99, 46.9549, 140.93,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-200063,4.55,2574, 15.2490,   3.58,DSN,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,unassigned
+BCW-200064,4.70,  47, 87.3756, 239.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200065,5.78, 136, 65.8153,  85.59,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas rhodesiae
+BCW-200066,4.41,  86, 76.9774, 160.82,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Atlantibacter,Atlantibacter sp002358165
+BCW-200067,3.21,1078, 26.7920,   4.38,DSN,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Microbacterium,Microbacterium hominis
+BCW-200068,6.81, 270, 39.9086,  46.97,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas poae
+BCW-200069,5.70,  46, 58.8704, 273.52,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200071,4.37,  74, 14.2126, 106.27,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200073,6.51, 573, 18.3281,  19.54,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200077,2.61,  47, 47.8418, 219.56,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200078,2.41, 807, 41.8670,   4.36,SDS,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Micrococcaceae,Micrococcus,Micrococcus luteus
+BCW-200079,2.68, 157,129.5540, 150.09,DSN,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,unassigned
+BCW-200081,3.84,  54,167.7460, 140.62,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200082,5.05,  48, 73.5815, 245.96,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter mori
+BCW-200083,5.84,  74, 58.7416, 150.61,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200084,5.84,  49, 65.7936, 294.64,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200086,5.84,  78, 53.7738, 154.88,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200092,4.63,  41, 71.5847, 245.20,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp000762975
+BCW-200093,5.98, 118, 39.8944, 102.50,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200094,4.93, 126, 62.0805, 266.39,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200095,4.89,  27, 59.4862, 467.32,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200096,5.82,  71, 63.4663, 142.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200097,4.06,  28,127.4020, 370.25,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200099,5.82, 109, 38.2369, 104.53,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200100,3.79,  53,133.7120, 201.19,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200101,5.16,  99,116.8880, 179.32,SDS,Bacteria,Firmicutes,Bacilli,Bacillales,Bacillaceae,Bacillus,Bacillus horneckiae
+BCW-200102,4.89,  27, 81.7716, 467.26,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200103,4.42, 499, 61.4429,  14.50,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200104,4.96,  59, 72.9082, 175.60,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200105,3.96,  29,176.5260, 365.33,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200106,5.60, 152, 41.7422,  79.64,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200107,4.78,  32, 63.1042, 297.02,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200109,5.04,  26, 91.5755, 560.96,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200111,5.01,  41, 63.7447, 322.32,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter farmeri
+BCW-200112,3.96,  27,189.1200, 365.45,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200113,6.85,1557, 42.6260, 104.39,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200114,5.27,  51, 61.6602, 215.08,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-200115,4.30,  68,116.1090, 194.04,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Morganella,unassigned
+BCW-200116,3.96,  32, 81.0963, 365.35,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200117,5.59, 151, 34.1878,  78.52,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200118,3.96,  26,177.9140, 367.41,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200119,3.96,  30,131.6990, 367.43,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,unassigned
+BCW-200120,5.60,  78, 71.0585, 190.03,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200121,2.48,  40,211.8250, 205.25,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200122,5.05,  29, 95.4241, 468.27,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200123,5.79,  64, 53.8870, 217.40,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200124,5.81, 140, 52.3390, 104.61,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200128,2.34,  26,193.8470, 261.16,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200129,5.79, 118, 41.2452,  96.87,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200132,5.79,  99, 57.6833,  93.61,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200133,7.60,3028, 31.1854, 157.22,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200136,5.79, 103, 49.6399, 121.46,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200137,5.79,  91, 60.4347, 144.99,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200138,2.34,  28,255.2340, 199.73,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200141,4.99,  44, 87.4310, 303.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200142,5.60,  78, 56.6164, 188.33,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200143,5.63,  70, 54.1048, 216.78,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200144,5.63,  62,107.5860, 243.36,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200145,5.43, 105, 49.4995, 123.55,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200146,5.64,  96, 41.6505, 131.99,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200147,6.40, 999, 32.8191,  62.63,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-200148,8.64,3288, 41.3468,  92.51,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200149,5.63,  72, 76.7790, 198.37,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200150,2.46,  28,177.3820, 333.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200151,5.58, 138, 59.7529, 127.81,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200152,5.63,  60, 60.1679, 430.62,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200153,4.46, 450, 48.8515,  16.93,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200154,4.49,  56, 87.7029, 123.49,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200155,5.43,  90, 92.5046, 139.06,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200156,5.75, 168, 39.8529,  71.03,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200157,5.58, 150, 43.6424, 120.53,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200158,2.36,  25,253.2750, 210.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200159,2.36,  24,274.0850, 210.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200160,2.36,  22,253.1760, 210.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200161,5.60,  50, 58.6560, 383.82,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200162,5.29,  76, 74.8844, 183.04,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200163,2.36,  24,258.8780, 210.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200165,5.60,  48, 92.3261, 381.00,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200167,5.80,  66, 46.6633, 216.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200168,5.49,  91, 56.8323, 112.86,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200169,5.60,  51, 95.9602, 270.12,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200171,5.60,  73, 67.7248, 184.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200172,5.79,  58,119.4120, 248.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200173,2.39, 546, 71.9384,   7.03,SDS,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Micrococcaceae,Micrococcus,Micrococcus luteus
+BCW-200174,2.35,  26,300.4430, 210.53,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200175,2.34,  29,309.5790, 190.27,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200177,5.80,  68, 44.9756, 216.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200180,2.62,  48,153.4640, 188.59,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200181,4.99,  48, 63.0695, 278.62,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200182,5.75, 162, 38.4876,  70.37,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200183,4.99,  70, 34.7714, 140.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200184,5.76,  66, 67.8391, 188.26,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200188,2.45,  31,102.8960, 197.14,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200192,2.45,  27,264.3410, 223.91,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200194,4.99,  62, 42.5990, 144.82,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200195,5.75, 241, 26.3015,  49.41,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200196,2.45,  26,324.2080, 229.11,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200197,4.99,  52, 70.1347, 238.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200198,2.87, 268,293.7460, 171.65,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200199,5.75, 141, 40.5579,  81.21,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200200,5.75, 178, 34.6506,  65.00,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200201,5.75, 220, 29.2559,  45.87,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200202,4.54, 753, 29.6251,   9.17,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200203,5.78,  68, 80.0424, 280.45,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200206,5.03,  30, 72.5664, 458.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200208,5.48,  95, 51.6371, 105.76,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200209,3.69,1793, 15.0293,   2.79,SDS,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Leifsonia,unassigned
+BCW-200210,4.99,  43, 85.6035, 278.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200213,5.63,  58, 47.5442, 307.71,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200214,4.99,  41,117.4100, 303.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200215,5.35, 144, 36.5573,  83.11,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,unassigned
+BCW-200216,4.87,  26, 85.5719, 477.94,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200218,4.89,  69, 92.6092, 123.88,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200219,4.89,  66, 88.3189, 131.93,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200221,5.76,  66,125.7220, 268.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200225,5.76,  64,111.8200, 268.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200226,4.99,  44, 68.5396, 254.52,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200227,4.99,  43, 77.5819, 278.71,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,unassigned
+BCW-200229,2.49,  70,290.1140, 284.91,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200231,5.00,  54, 90.9357, 264.42,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200232,2.45,  26,247.2600, 223.91,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200234,5.75, 179, 33.8844,  64.08,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200235,5.75, 214, 29.8392,  48.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200236,5.76,  92, 69.2433, 127.63,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200237,5.76,  70, 67.8907, 268.28,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200238,2.45,  28,230.2510, 223.91,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200241,2.46,  28,199.6320, 284.92,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-200266,4.52,  46,154.7100, 279.79,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200267,6.74,  91, 98.0311, 214.02,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200268,4.81,  79,139.2410, 632.43,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter mori
+BCW-200269,4.40,  36,129.4630, 392.52,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200270,4.40,  37,134.3780, 392.38,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200271,4.40,  33,158.7630, 392.38,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200272,5.50,  65,100.3720, 281.13,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200275,4.51,  34,135.2060, 637.01,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200276,5.36,  73,110.2430, 178.66,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200279,4.72,  42, 70.9581, 567.69,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200281,5.81,  54, 92.7112, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200290,6.41, 112, 42.1841, 212.10,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas lurida
+BCW-200294,5.96,  87, 98.0154, 249.87,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW-200307,5.26,  99,126.7010, 250.45,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200308,5.25,  82,111.8310, 250.56,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200315,7.26,2738, 91.1785,  34.52,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-200317,4.92,  25, 80.4301, 619.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200319,4.84,  62, 80.2054, 271.49,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Erwinia,Erwinia sp002752575
+BCW-200327,5.25,  23,144.8240,1135.00,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-200328,6.00,  88, 51.5378, 453.42,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200432,6.30,  65, 93.9368, 242.50,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200436,6.34,  81, 83.3331, 285.42,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas putida
+BCW-200437,5.81,  54, 69.8243, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200438,5.68,  74, 85.7803, 212.37,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200440,5.82,  61, 76.9908, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200442,5.81,  54, 78.9937, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200443,6.23,  83, 80.2891, 216.22,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas lurida
+BCW-200444,5.81,  58, 86.1766, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200446,5.81,  52,128.4830, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200449,5.82,  59,143.9990, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200458,6.31,  61, 41.3675, 390.08,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200460,6.39,  62, 69.2401, 225.64,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200464,5.54,  35, 97.0243, 554.66,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,unassigned
+BCW-200465,5.87,  51, 91.9931, 380.82,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200471,6.68,  85,105.8220, 356.65,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200473,4.40,  39, 69.9808, 327.45,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200476,6.83,  96, 61.2384, 328.62,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200477,5.53,  60, 70.4700, 255.99,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas sp002843585
+BCW-200488,5.82,  60, 49.1181, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200496,5.82,  60, 79.6109, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200497,6.74,  92, 73.0633, 200.28,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200498,6.81, 190,110.3860, 234.81,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-200499,5.83,  68, 80.5497, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200509,5.41,  64,126.2060, 256.78,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200517,5.41,  72,150.1940, 256.78,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200521,5.58,  65, 92.5995, 313.71,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200525,5.71,  37, 90.0385, 821.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200527,6.80,  74, 83.0730, 304.90,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200528,6.80,  72, 68.5373, 315.02,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200533,7.12, 113, 39.7612, 166.42,DSN,Bacteria,Actinobacteriota,Actinobacteria,Mycobacteriales,Mycobacteriaceae,Rhodococcus,unassigned
+BCW-200539,5.10,  46,128.6490, 508.84,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter werkmanii
+BCW-200542,5.31, 167,309.7190, 101.25,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-200544,5.23,  36,147.2310, 497.49,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-200545,5.57,  62, 76.1600, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200547,5.28, 219,224.2980,  48.92,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-200552,5.60,  61,123.9780, 175.11,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200553,5.47,  66, 57.3515, 199.46,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200555,5.82,  59,140.5520, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200556,4.36,  16, 88.1230,1189.95,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200559,5.60,  59, 94.0648, 175.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200561,5.50,  65,146.8570, 281.13,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200564,5.57,  67,116.2530, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200565,5.57,  63,106.5360, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200567,5.62, 162,147.7710, 241.52,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200570,4.49,  29, 65.4214, 421.45,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200574,4.49,  21,149.1810, 497.44,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200577,5.90,  69, 91.3409, 225.83,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200578,5.81,  72,129.6390, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200587,4.56,  58,155.8210, 489.81,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200588,6.74,  95, 82.7097, 203.10,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200589,4.54,  27,127.0770, 489.90,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200596,4.38,  25, 56.8138, 564.05,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200599,6.11,  50, 92.4320, 288.92,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200600,5.80,  44,107.2790, 366.06,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200607,6.74,  81, 98.0068, 255.99,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200620,5.60,  40, 81.2172, 382.73,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200621,6.33,  90, 30.8566, 232.56,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas putida
+BCW-200634,4.54,  19,136.7220, 592.37,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200641,4.54,  26,103.0420, 592.37,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200642,5.57,  61,158.5870, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200644,5.81,  66, 77.5926, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200646,4.52,  40,125.1690, 300.17,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200647,5.81,  67, 68.9898, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200648,5.62,  52,111.3450, 354.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200649,5.57,  64, 60.7146, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200650,5.81,  70, 50.1583, 237.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200651,5.50,  36,106.8770, 424.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200656,5.48,  37, 65.7627, 333.40,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-200660,5.50,  38,113.6710, 422.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200661,5.47,  68, 59.9847, 199.10,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200662,5.50,  40,110.5540, 424.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-200663,5.80,  40, 85.7900, 610.47,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,unassigned
+BCW-200665,5.47,  65, 44.8613, 244.26,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200667,4.87,  22, 86.3334, 868.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200669,4.88,  23,118.7270, 868.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-200704,5.36,  73,106.5740, 166.78,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200705,6.04,  50,118.1000, 453.42,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200715,5.57,  63,135.1130, 280.39,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200716,5.57,  64, 79.3454, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200718,5.57,  63,108.9150, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200723,5.57,  67,330.7140, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200724,5.57,  62,141.0330, 290.00,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200725,5.59,  95,132.5150, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200726,5.57,  66, 56.3625, 280.49,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200727,5.71,  42, 59.8637, 474.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200736,5.59,  93,144.6190, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200738,5.71,  36,136.9830, 821.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200776,5.47,  64, 69.7907, 245.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200785,7.23,  51, 74.0247, 328.32,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200790,6.80,  75, 75.0104, 315.02,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200791,6.83, 123,123.8850, 304.90,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-200797,5.60,  61, 62.9482, 175.20,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200798,5.60,  57, 78.9189, 175.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200800,5.60,  62, 63.1379, 175.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200801,5.60,  58, 66.6647, 175.11,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200806,5.50,  68, 56.7983, 281.13,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200808,5.50,  68, 83.5809, 281.13,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200810,5.50,  70, 41.3262, 280.89,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-200814,5.57,  63,137.2880, 278.99,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200815,5.57,  62,116.3780, 290.00,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200818,5.60,  61, 79.9458, 175.11,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200820,5.82,  59, 95.7048, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200821,5.81,  69, 88.9110, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200828,5.92, 234,129.6420, 237.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-200847,5.82,  59,148.2640, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200855,5.82,  57,117.7540, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200874,5.82,  60,100.5870, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200879,5.83,  64, 99.5954, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200880,5.82,  61, 76.6039, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200881,5.82,  55, 61.0701, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200882,5.82,  61, 36.7437, 257.94,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200883,4.75,  34,154.9590, 492.58,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-200885,5.82,  63, 38.5807, 230.33,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200886,5.82,  60, 46.8572, 258.16,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200887,5.82,  60, 70.5075, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200891,5.81,  53, 82.8770, 371.58,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200892,5.81,  55,105.8350, 349.81,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200902,6.04,  43, 92.8187, 394.44,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200903,6.37, 198, 43.1619, 453.42,DSN,Bacteria,Proteobacteria,unassigned,unassigned,unassigned,unassigned,unassigned
+BCW-200904,6.27,  50,114.4130, 453.42,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200909,5.82,  60, 67.2214, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200910,5.98,  55, 98.2451, 394.44,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200912,6.00,  89,116.2370, 394.44,DSN,Bacteria,Proteobacteria,unassigned,unassigned,unassigned,unassigned,unassigned
+BCW-200915,5.82,  59, 74.1729, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200920,6.27,  50, 94.1062, 453.42,DSN,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium sp000192635
+BCW-200926,5.82,  59, 38.9117, 258.16,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-200938,4.52,  41, 58.7375, 372.43,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200939,4.52,  44,163.7400, 426.62,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200944,4.54,  77,150.2510, 426.62,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200945,4.56,  95,126.3140, 357.61,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,unassigned
+BCW-200951,5.44,  36,137.3220, 462.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200952,5.06,  42,123.9940, 397.53,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea ananatis
+BCW-200955,5.44,  35,148.1450, 473.01,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,Metakosakonia sp002377245
+BCW-200983,5.10,  41, 74.2066, 508.84,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter werkmanii
+BCW-200984,5.10,  48,111.3850, 508.46,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter werkmanii
+BCW-200986,5.10,  44,211.8490, 508.84,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter werkmanii
+BCW-200988,5.13,  95, 98.2474, 508.46,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-200989,4.36,  15,166.8970,2411.54,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200990,4.36,  16,136.5720,2411.61,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200991,4.36,  17,113.9980, 596.04,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-200993,5.61,  47,136.0090, 283.20,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Burkholderiales,Burkholderiaceae,Herbaspirillum,Herbaspirillum seropedicae
+BCW-200994,4.36,  15,120.7190,2411.52,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201007,5.61,  81,100.8640, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201008,5.58,  70,134.8040, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201010,5.57,  63, 54.6010, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201013,5.57,  65, 73.6162, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201014,5.57,  63, 72.0976, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201019,6.18,  68,145.7340, 188.20,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-201020,6.18,  72,116.3620, 178.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-201021,6.18,  72, 88.5815, 186.38,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-201024,5.57,  64, 91.0445, 290.00,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201025,5.57,  66, 45.3244, 226.11,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201028,5.57,  65,128.5530, 220.15,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201036,5.57,  63,150.0390, 280.39,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201044,5.82,  56, 91.9773, 263.57,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201045,4.36,  16, 90.7439,1190.31,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201051,5.68,  75,106.8480, 514.78,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-201054,5.67,  67, 81.2272, 515.78,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-201056,4.53,  38,138.2630, 623.96,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Hafnia,unassigned
+BCW-201058,5.58, 103, 98.6001, 129.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201059,5.60,  60,195.1740, 175.34,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201070,5.60,  58,106.1560, 175.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201071,5.62,  52, 90.4333, 338.82,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201075,5.47,  64,102.6930, 245.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201078,5.47,  63, 70.2357, 172.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201079,5.68,  71,166.1930, 515.78,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-201081,4.72,  37, 78.8446, 283.75,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201083,4.98,  33, 69.2168, 506.38,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter portucalensis
+BCW-201084,4.36,  27,186.1850,2411.61,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201085,5.27,  36, 35.4787, 573.10,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201088,5.62,  90, 93.2327, 175.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201090,4.67, 504,140.5160, 623.23,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-201091,5.60,  57, 92.5857, 175.29,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201097,5.39, 123,173.2660, 158.69,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,unassigned,unassigned,unassigned,unassigned
+BCW-201098,5.37,  83,151.9350, 166.78,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201103,4.47,  22,104.0420, 592.37,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201107,5.47,  63,115.9400, 234.19,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201151,4.40,  34,202.7240, 392.38,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201152,4.98,  36, 57.4230, 326.49,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter portucalensis
+BCW-201153,5.27,  33,104.1400, 573.10,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201154,4.98,  33, 90.5728, 506.38,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter portucalensis
+BCW-201155,5.58, 106, 76.8333, 141.24,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201162,5.60,  57, 33.1421, 226.11,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201173,4.66, 131,121.5160, 105.36,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Escherichia,unassigned
+BCW-201175,5.57,  62,128.2020, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201176,5.57,  66,177.9650, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201184,5.60,  59,151.6110, 175.06,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201185,5.28,  32, 68.4996, 482.89,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201186,5.57,  62,102.6260, 280.39,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201187,5.57,  66, 71.4436, 226.10,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201236,4.39,  35, 92.8036, 365.79,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Hafnia,unassigned
+BCW-201238,5.27,  32,182.7730, 573.10,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201245,5.35,  42, 37.7059, 499.78,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-201248,5.31,  39, 98.5519, 468.61,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,Rahnella sp003263545
+BCW-201257,5.28,  30, 93.3652, 432.16,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201258,4.36,  17,138.2990,2411.61,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201259,5.61,  68, 45.7577, 226.05,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201260,4.36,  17, 46.8426,2411.32,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Lelliottia,unassigned
+BCW-201263,5.50,  39,126.9120, 424.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-201267,5.94, 119,104.0490, 403.00,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-201290,7.23,  49, 39.9560, 451.37,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201292,6.31,  50, 96.3566, 407.41,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201293,6.32,  56, 78.4494, 390.19,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201297,5.81,  69, 86.1500, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201302,5.81,  66, 56.7743, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201304,5.81,  66, 74.9380, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201315,5.81,  68,108.5120, 256.48,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201350,5.23,  36,158.2420, 497.49,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201441,5.50,  36,104.7240, 424.43,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,unassigned
+BCW-201443,5.72,  48, 91.5324, 821.62,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201444,4.71,  82, 61.7877, 151.63,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Atlantibacter,unassigned
+BCW-201445,4.72,  82, 86.2967, 140.07,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Atlantibacter,unassigned
+BCW-201450,5.23, 128,104.9110, 248.08,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Hafnia,unassigned
+BCW-201453,2.53,  36,162.3320, 214.27,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-201461,5.71,  35, 78.3998, 821.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201614,5.36,  76, 78.7447, 147.10,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201615,5.47,  60, 67.0342, 256.83,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201620,5.47,  61,110.3790, 245.51,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201648,5.57,  64,101.9890, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201649,5.68,  77, 61.8898, 230.59,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201653,5.68,  77, 79.7480, 527.58,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-201654,5.57,  63, 76.7313, 260.80,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201659,4.88,  24,164.9360, 868.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201662,5.68,  72, 98.5452, 436.04,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,unassigned
+BCW-201703,5.47,  67,154.5810, 245.25,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201721,4.92,  24,102.6820, 619.31,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201726,4.56,  40, 84.6569, 265.88,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201808,5.55,  63, 46.6200, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201809,5.25,  26, 45.4113,2994.32,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Serratia,Serratia liquefaciens
+BCW-201811,5.10, 120,166.2130, 140.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201812,4.75,  38,160.3930, 353.42,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201814,4.75,  34, 67.0572, 353.42,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201819,3.65,  47,162.0640, 408.18,SDS,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Curtobacterium,unassigned
+BCW-201826,5.06,  41, 84.9247, 397.40,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea ananatis
+BCW-201827,4.73,  38,115.5540, 347.15,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201828,5.55,  56,147.9030, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201832,5.10, 123, 58.3493, 140.83,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201833,4.82,  99,135.6200, 466.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea wallisii
+BCW-201835,2.51,  28,100.6430, 184.98,DSN,Bacteria,Firmicutes,Bacilli,Staphylococcales,Staphylococcaceae,Staphylococcus,unassigned
+BCW-201839,4.75,  36,160.8920, 473.19,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201842,3.40,  21,181.4540, 641.66,DSN,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Curtobacterium,unassigned
+BCW-201845,5.23, 306,174.9650, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-201847,4.75,  34, 62.2239, 492.34,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201848,5.06,  41,170.5630, 397.53,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea ananatis
+BCW-201849,4.75,  37, 60.9545, 353.42,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201850,5.55,  61, 40.7502, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201851,4.13,  29, 78.9253, 440.88,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+BCW-201853,5.03, 117,387.4680, 239.75,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Erwinia,Erwinia sp002752575
+BCW-201854,4.98, 106, 67.1547, 207.85,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Erwinia,Erwinia sp002752575
+BCW-201857,4.75,  37,115.9130, 473.19,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201858,5.55,  59, 36.3251, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201859,5.87, 120, 54.8319, 112.03,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201861,2.42,  46,192.4130, 207.80,DSN,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW-201862,6.25,  93,117.2420, 285.27,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas putida
+BCW-201864,4.73,  40,122.3300, 239.65,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201865,4.98, 109,143.3370, 250.00,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Erwinia,Erwinia sp002752575
+BCW-201866,4.75,  36,114.5150, 492.58,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201867,4.73,  49, 84.2265, 239.63,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201868,5.72,  93,114.6010, 178.90,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201873,5.59, 125, 40.1589, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201874,4.76,  37, 82.8596, 492.57,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201875,5.86, 100, 41.8099, 132.28,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201876,5.55,  54, 45.5072, 266.77,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201877,5.10, 115, 40.5181, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201878,5.08, 118,102.8200, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201879,5.55,  59,103.9820, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201880,5.10, 130, 75.5935, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201881,4.75,  33, 87.0781, 492.46,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201882,5.08, 120, 52.3922, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201883,4.78,  80,107.8030, 492.58,DSN,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,unassigned
+BCW-201884,5.09, 118, 91.4652, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201885,5.10, 122, 66.1420, 140.83,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201886,5.55,  53,132.3080, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201887,5.73, 350, 72.1044, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201888,5.55,  65, 49.2271, 264.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201889,5.10, 136, 54.2365, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201890,5.62,  54,109.2970, 354.02,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201891,6.42,1550, 60.4808, 478.92,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,unassigned,unassigned
+BCW-201895,5.10, 119, 86.6911, 146.41,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201896,3.40,  30,204.1440, 388.19,DSN,Bacteria,Actinobacteriota,Actinobacteria,Actinomycetales,Microbacteriaceae,Curtobacterium,unassigned
+BCW-201897,5.06,  41,145.0780, 425.74,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea ananatis
+BCW-201899,5.10, 127, 85.4097, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201900,5.80,  41,109.1690, 368.27,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201901,5.84,  87, 42.0512, 258.16,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201903,5.10, 118,148.8800, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201909,4.73,  39,135.2500, 347.15,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201914,5.06, 114, 72.8206, 140.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201917,4.73,  42, 79.9835, 283.76,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-201926,5.88,  68, 42.7573, 299.39,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,unassigned
+BCW-201933,4.75,  38, 62.9881, 473.19,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201937,5.55,  61, 75.0432, 254.60,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201938,5.11, 127, 88.1813, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201945,5.10, 120, 60.4815, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201947,5.88, 128,131.2640, 136.25,SDS,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,unassigned
+BCW-201949,4.75,  36, 87.8890, 492.58,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter ludwigii
+BCW-201957,5.10, 118,161.9360, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201972,5.55,  60, 84.7192, 264.79,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201975,5.07, 118,139.0920, 146.72,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,unassigned
+BCW-201982,5.57,  62, 62.3470, 280.39,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Rahnella,unassigned
+BCW-201990,5.55,  59,123.9470, 266.84,DSP,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Metakosakonia,unassigned
+BCW-201995,5.06,  40,113.8650, 373.94,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea ananatis
+BCW-201997,4.76,  29,152.2890, 580.47,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa
+BCW-202001,4.76,  27,128.7050, 580.55,DSN,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Pantoea,Pantoea dispersa

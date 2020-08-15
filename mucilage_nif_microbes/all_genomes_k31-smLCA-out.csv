@@ -1,0 +1,612 @@
+ID,superkingdom,phylum,class,order,family,genus,species
+001,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+002,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas putida
+003,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+004,Eukaryota,Basidiomycota,Microbotryomycetes,Sporidiobolales,Sporidiobolaceae,Rhodotorula,Rhodotorula graminis
+006,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+007,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,
+008,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+009,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+010,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+011,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+014,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+015,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+016,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+017,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+018,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+019,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+020,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+021,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+022,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+023,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+024,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+025,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+026,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+027,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas fluorescens
+028-1,Bacteria,Firmicutes,Bacilli,Bacillales,Bacillaceae,Bacillus,Bacillus cereus
+028-2,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+029,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+030,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+031,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+032,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Hafniaceae,Hafnia,Hafnia alvei
+033,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+034,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+036,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+037,Bacteria,,,,,,
+038,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+039,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+041,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+042,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+043,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+044,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+045,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+046,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+048,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+049,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+051,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+052,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter cloacae
+053,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+054,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+055,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+056,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+058,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+059,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+060,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+061,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+062,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+064,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+065,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+066,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+067,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+068,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+069,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+070,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+071,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+072,Bacteria,Actinobacteria,Actinobacteria,Corynebacteriales,Nocardiaceae,Rhodococcus,Rhodococcus erythropolis
+073,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+074,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+075,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+076,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+077,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+078,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+079,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+081,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+082,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+083,Bacteria,,,,,,
+084,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+085,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+087,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+088,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+089,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+090,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+091,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+092,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+093,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+094,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+095,Bacteria,,,,,,
+096,,,,,,,
+098,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+099,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,
+100,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+101,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+102,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+103,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+104,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+105,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+106,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+109,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+110,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+111,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+112,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+113,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,
+114,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+115,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+116,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+117,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+118,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+119,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+120,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Curtobacterium,
+121,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+122,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+124,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+125,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+126,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+127,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+128,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+129,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+130,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+131,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+132,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+133,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+134,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+135,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+136,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+137,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+138,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+139,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+140,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+141,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+142,Bacteria,Proteobacteria,,,,,
+143,Bacteria,,,,,,
+144,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+145,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+146,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+147,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+148,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+149,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+150,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+151,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas sp. URIL14HWK12:I6
+152,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+153,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+155,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+156,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+157,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+158,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+159,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+160,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+161,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+162,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+163,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia fonticola
+164,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+165,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+166,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Hafniaceae,Hafnia,Hafnia alvei
+167,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+169,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,
+171,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+172,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+173,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+174,,,,,,,
+175,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+176,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+177,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+178,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+179,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,bacteria symbiont BFo1 of Frankliniella occidentalis
+180,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+181,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+182,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+183,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+184,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+185,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+186,Bacteria,Proteobacteria,,,,,
+187,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+189,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+191,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+192,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+193,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+194,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+195,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+196,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+197,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+198,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+199,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+200,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+201,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Curtobacterium,
+202,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+203,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+204,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+205,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+206,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+208,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+209,Bacteria,Proteobacteria,,,,,
+210,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+211,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+213,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,bacteria symbiont BFo1 of Frankliniella occidentalis
+215,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+216,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+217,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+218,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+219,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+220,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+222,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+223,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+224,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+225,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+226,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+227,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+228,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+229,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+230,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+232,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+233,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+234,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+235,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+236,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+237,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+238,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+239,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+240,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+241,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+242,Bacteria,Proteobacteria,,,,,
+243,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+244,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+245,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,bacteria symbiont BFo1 of Frankliniella occidentalis
+247,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+248,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+249,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+250,Bacteria,Firmicutes,Bacilli,Lactobacillales,Enterococcaceae,Enterococcus,Enterococcus casseliflavus
+251,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+252,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+253,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+254,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+255,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Hafniaceae,Hafnia,Hafnia alvei
+256,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+257,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+259,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+260-1,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+260-2,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+261,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+263,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+264,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+265,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+266,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+268,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+269,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+270,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+271,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+272,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+274,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+275,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+276,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+277,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+278,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+279,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+280,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea dispersa
+281,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+282,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+283,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+284,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+287,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+288,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+289,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+290,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+292,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+294,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+295,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+296,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+297,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+298,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+299,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+300,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+301,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+302,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+303,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+304,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+305,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+306,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+307,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+308,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+310,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+311,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+312,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,
+313,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+314,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+316,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+318,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+320,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+321,Bacteria,,,,,,
+322,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+323,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+324,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+325,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+326,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+327,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+328,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+330,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,
+331,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+332,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+333,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+334,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+335,,,,,,,
+336,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+337,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+338,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+339,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+340,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Curtobacterium,
+341,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+342,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+344,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+345,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+346,Bacteria,,,,,,
+347,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Erwiniaceae,Pantoea,Pantoea ananatis
+348,Bacteria,,,,,,
+349,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+350,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+352,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Oxalobacteraceae,Herbaspirillum,
+353,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+354,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+355,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+356,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+357,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+358,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+359,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+360,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+361,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+362,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+363,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+364,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+365,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+366,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+367,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium tumefaciens
+368,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+369,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+370,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia fonticola
+371,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+372,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+374,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+375,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+376,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+377,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+378,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+380,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+381,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+382,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia fonticola
+383,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+384,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+385,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+386,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+387,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+388,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia fonticola
+389,Bacteria,unassigned,unassigned,unassigned,unassigned,unassigned,bacteria symbiont BFo1 of Frankliniella occidentalis
+390,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+391,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+392,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+393,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+394,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+395,Bacteria,Proteobacteria,,,,,
+396,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+398,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia fonticola
+399,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+400,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+401,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+402,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+403,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+404,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+405,Bacteria,,,,,,
+406,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+407,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+408,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+409,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+410,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+411,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+412,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,
+413,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+414,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Rahnella,
+415,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+418,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,
+419,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+420,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+421,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+424,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+425,Eukaryota,Ascomycota,Saccharomycetes,Saccharomycetales,Debaryomycetaceae,Meyerozyma,
+BCW_200001,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Comamonadaceae,Acidovorax,Acidovorax wautersii
+BCW_200002,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200003,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200004,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200005,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200006,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200007,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200008,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200009,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200010,Bacteria,,,,,,
+BCW_200011,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Comamonadaceae,Acidovorax,Acidovorax wautersii
+BCW_200012,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp. UCD-UG_FMILLET
+BCW_200013,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp. UCD-UG_FMILLET
+BCW_200014,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200015,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp. UCD-UG_FMILLET
+BCW_200016,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200017,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200018,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200019,Bacteria,,,,,,
+BCW_200020,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200021,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200022,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200023,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200024,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200025,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200026,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200027,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200028,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200029,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200030,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW_200031,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter freundii
+BCW_200032,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200033,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200034,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200035,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200036,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter braakii
+BCW_200037,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200039,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200040,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200041,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200042,Bacteria,,,,,,
+BCW_200043,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter cloacae
+BCW_200044,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200045,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200046,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas protegens
+BCW_200047,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200048,Bacteria,,,,,,
+BCW_200049,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200050,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200051,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200052,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200053,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200054,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200055,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200056,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+BCW_200057,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Microbacterium,
+BCW_200058,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,Pseudomonas protegens
+BCW_200060,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200061,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,
+BCW_200063,Bacteria,,,,,,
+BCW_200064,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter asburiae
+BCW_200065,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+BCW_200066,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200067,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Microbacterium,Microbacterium hominis
+BCW_200068,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+BCW_200069,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200070,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW_200071,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200072,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW_200073,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+BCW_200074,Bacteria,,,,,,
+BCW_200077,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200078,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Micrococcaceae,Micrococcus,Micrococcus luteus
+BCW_200079,Bacteria,,,,,,
+BCW_200080,Bacteria,,,,,,
+BCW_200081,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200082,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter cloacae
+BCW_200083,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200084,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200085,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200086,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200087,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200089,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Burkholderiaceae,Burkholderia,
+BCW_200091,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Burkholderiaceae,Burkholderia,
+BCW_200092,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter sp. UCD-UG_FMILLET
+BCW_200093,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200094,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200095,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200096,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200097,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200098,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200099,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,
+BCW_200100,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200101,Bacteria,Firmicutes,Bacilli,Bacillales,Bacillaceae,Bacillus,Bacillus eiseniae
+BCW_200102,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200103,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+BCW_200104,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200105,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200106,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200107,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,Enterobacter cloacae
+BCW_200108,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200109,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200111,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Citrobacter,Citrobacter farmeri
+BCW_200112,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200113,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+BCW_200114,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,Serratia,Serratia liquefaciens
+BCW_200115,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Morganellaceae,Morganella,
+BCW_200116,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200117,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200118,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200119,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Moraxellaceae,Acinetobacter,
+BCW_200120,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200121,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200122,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200123,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200124,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200126,Bacteria,,,,,,
+BCW_200127,Bacteria,,,,,,
+BCW_200128,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200129,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200130,Bacteria,Firmicutes,Bacilli,Lactobacillales,Enterococcaceae,Enterococcus,Enterococcus casseliflavus
+BCW_200131,Bacteria,,,,,,
+BCW_200132,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200133,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200134,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200135,Bacteria,,,,,,
+BCW_200136,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200137,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200138,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200139,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200140,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200141,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200142,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200143,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200144,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200145,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200146,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200147,Bacteria,Proteobacteria,,,,,
+BCW_200148,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,,,
+BCW_200149,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200150,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200151,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200152,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200153,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+BCW_200154,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+BCW_200155,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200156,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200157,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200158,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200159,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200160,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200161,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200162,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200163,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200164,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200165,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200166,Bacteria,,,,,,
+BCW_200167,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200168,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200169,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200170,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200171,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200172,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200173,Bacteria,,,,,,
+BCW_200174,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200175,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200176,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200177,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Klebsiella,Klebsiella michiganensis
+BCW_200178,Bacteria,,,,,,
+BCW_200179,Bacteria,,,,,,
+BCW_200180,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200181,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200182,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200183,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200184,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200185,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200186,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200187,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200188,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200189,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200191,Bacteria,,,,,,
+BCW_200192,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200193,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200194,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200195,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200196,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200197,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200198,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200199,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200200,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200201,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200202,Bacteria,Proteobacteria,Gammaproteobacteria,Xanthomonadales,Xanthomonadaceae,Stenotrophomonas,Stenotrophomonas maltophilia
+BCW_200203,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW_200204,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200205,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200206,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200207,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200208,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,,
+BCW_200209,Bacteria,Actinobacteria,Actinobacteria,Micrococcales,Microbacteriaceae,Leifsonia,
+BCW_200210,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200211,Bacteria,Proteobacteria,Gammaproteobacteria,Pseudomonadales,Pseudomonadaceae,Pseudomonas,
+BCW_200212,Bacteria,Proteobacteria,Betaproteobacteria,Burkholderiales,Alcaligenaceae,Achromobacter,
+BCW_200213,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Yersiniaceae,,
+BCW_200214,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200215,Bacteria,Proteobacteria,Alphaproteobacteria,Rhizobiales,Rhizobiaceae,Agrobacterium,Agrobacterium genomosp. 6
+BCW_200216,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200217,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Raoultella,Raoultella terrigena
+BCW_200218,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200219,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Enterobacter,
+BCW_200221,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200222,Bacteria,Proteobacteria,Gammaproteobacteria,,,,
+BCW_200223,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200224,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200225,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200226,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200227,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,Kosakonia,Kosakonia sacchari
+BCW_200228,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200229,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200230,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200231,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200232,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200233,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200234,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200235,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200236,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200237,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200238,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200239,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200240,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200241,Bacteria,Firmicutes,Bacilli,Lactobacillales,Streptococcaceae,Lactococcus,Lactococcus lactis
+BCW_200242,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,
+BCW_200243,Bacteria,Proteobacteria,Gammaproteobacteria,Enterobacterales,Enterobacteriaceae,,

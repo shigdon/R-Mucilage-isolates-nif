@@ -1,0 +1,17 @@
+gene	hmm	annotation	operon
+nifA	TIGR01817	Regulatory	nifRLA
+nifL	TIGR02938	Regulatory	nifRLA
+nifJ	TIGR02176	Redox	nifJ
+nifH	TIGR01287	Catalytic	nifHDK
+nifD	TIGR01282	Catalytic	nifHDK
+nifK	TIGR01286	Catalytic	nifHDK
+nifE	TIGR01283	Cofactor Syn.	nifEN
+nifN	TIGR01285	Cofactor Syn.	nifEN
+nifB	TIGR01290	Cofactor Syn.	nifBQ
+nifQ	NifQ	Cofactor Syn.	nifBQ
+nifU	TIGR02000	Cofactor Syn.	nifUSVM
+nifS	TIGR03402	Cofactor Syn.	nifUSVM
+nifV	TIGR02660	Cofactor Syn.	nifUSVM
+nifM	TIGR02933	Cofactor Syn.	nifUSVM
+nifW	NifW	Unknown	nifWF
+nifF	TIGR01752	Redox	nifWF

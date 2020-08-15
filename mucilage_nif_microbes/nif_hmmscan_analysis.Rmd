@@ -1,0 +1,3407 @@
+---
+title: "nif_hmmscan_analysis"
+author: "Shawn Higdon"
+date: "7/21/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+#library(cowplot)
+library(RColorBrewer)
+library(gplots)
+library(randomcoloR)
+#library(genefilter)
+library(rafalib)
+library(scales)
+library(viridis)
+library(pheatmap)
+library(ComplexHeatmap)
+
+#theme_set(theme_grey())
+```
+# Background
+
+### TIGRFAMS Hidden Markov Models for Nitrogenase related genes
+
+| TIGRFAM   | Annotation             | Class               |
+|-----------|------------------------|---------------------|
+| TIGR01282 | nifD                   | Fe-Mo               |
+| TIGR01283 | nifE                   | Cofactor Synthesis  |
+| TIGR01284 | alt_nitrog_alpha_chain | Mo-independent      |
+| TIGR01285 | nifN                   | Cofactor Synthesis  |
+| TIGR01286 | nifK                   | Fe-Mo               |
+| TIGR01287 | nifH                   | Fe-Mo               |
+| TIGR01290 | nifB                   | Cofactor Synthesis  |
+| TIGR01581 | Mo_ABC_porter_NifC     | Co-factor Transport |
+| TIGR01616 | nitrog_assoc           | Accessory           |
+| TIGR01817 | nifA                   | Regulatory          |
+| TIGR01860 | VNFD                   | Vn-Fe               |
+| TIGR01861 | ANFD                   | Fe-Fe               |
+| TIGR01862 | N2-ase-Ialpha          | Catalytic           |
+| TIGR01994 | NifU_SUF_scaf_2        | Fe-S assembly       |
+| TIGR01999 | iscU_FeS_clust_asm     | Fe-S assembly       |
+| TIGR02000 | NifU_proper            | Fe-S assembly       |
+| TIGR02660 | nifV_homoC_syn         | Cofactor Synthesis  |
+| TIGR02662 | dinitro_DRAG           | Regulatory          |
+| TIGR02663 | nifX                   | Accessory           |
+| TIGR02929 | anfG_nitrog            | Fe-Fe               |
+| TIGR02930 | vnfG_nitrog            | Vn-Fe               |
+| TIGR02931 | anfK_nitrog            | Fe-Fe               |
+| TIGR02932 | vnfK_nitrog            | Vn-Fe               |
+| TIGR02933 | nifM_nitrog            | Accessory           |
+| TIGR02934 | nifT_nitrog            | Accessory           |
+| TIGR02935 | hyp_nif_pro            | Accessory           |
+| TIGR02936 | fdxN_nitrog            | Accessory           |
+| TIGR02938 | nifL_nitrog            | Regulatory          |
+| TIGR02940 | anfO_nitrog            | Fe-only Accessory   |
+| TIGR03402 | FeS_nifS               | Fe-S assembly       |
+| TIGR03403 | nifS_epsilon           | Fe-S assembly       |
+| TIGR03419 | NifU_clost             | Fe-S assembly       |
+| TIGR03798 | nif11_ocin_L_peptide   | Regulatory          |
+| TIGR03890 | nif11_cupin            | Regulatory          |
+| TIGR04064 | rSAM_nif11             | Regulatory          |
+| TIGR04103 | rSAM_nif11_3           | Regulatory          |
+
+
+# pHeatmap
+
+## 2014 BCW Isolate Genomes (232 genomes)
+
+> Analysis of isolates that had their genomes sequenced by the Weimer Lab
+
+### Read in the data and format 
+
+> HMMscan results from each isolate genome need to be read into a large list, then add another column to each that assigns an isolate genome to the recorded hmmscan match (designation of ownership). Then make one large dataframe for downstream processing that contains all matches.
+
+```{r, message=FALSE}
+# Create a list of BCW isolates
+bcw_isolate_list <- read.table("bcw_isolate_list.txt")
+
+# Read in the hmmscan Search output files for nif genes in each isolate's annotated faa list
+bcw_nifscan_list <- list.files(path = "./NIFscan_v2_output/TIGRFAM_39_nif", pattern = 'BCW_*', recursive = T, full.names = T)
+#bcw_nifscan_list
+
+# Create a list of bcw nifscan search output tables
+bcw_nifscan_tbl_list <- lapply(bcw_nifscan_list, read_tsv)
+
+# Add a column to every table that indicates the isolate genome for each NIF-TIGRFAM hmmscan hit
+bcw_nifscan_tbl_list <- mapply(cbind, bcw_nifscan_tbl_list, "isolate"=bcw_isolate_list$V1, SIMPLIFY=F)
+
+# Create One Dataframe for NIF-TIGRFAM matches of all isolates
+bcw_nifscan_df <- do.call("rbind", bcw_nifscan_tbl_list)
+
+# Add a column to each record that adds annotation information for each TIGRFAM
+## Read in map file
+tigr_def_list <- read_tsv("./../NIF_operon_metadata/NIF_TIGRFAMs.txt", col_names = T) 
+
+## match TIGRFAM annotation from tigr_def_list to nifscan family name
+bcw_nifscan_df$annotations <- tigr_def_list$Annotation[match(bcw_nifscan_df$Family, tigr_def_list$TIGRFAM)]
+```
+
+
+# Filtering functions
+```{r}
+
+# Create a Function to Filter with max. e-value cut off and 0.3 min. model coverage
+psHMM_0.3_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.35)
+}
+
+# Create a Function to Filter with max. e-value cut off and 0.5 min. model coverage
+psHMM_0.5_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.5)
+}
+
+# Create a Function to Filter with max. e-value cut off and 0.9 min. model coverage
+psHMM_0.9_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.85)
+}
+
+```
+
+
+### Filter the HMMscan results
+
+```{r}
+
+# Apply the filter (fdf = filtered data frame)
+bcw_nifscan_fdf <- psHMM_0.5_filter(bcw_nifscan_df)
+
+# Filter out TIGR00391 records (hydA) for Nickel Iron Hydrogenase, not nif genes
+
+bcw_nifscan_fdf <- bcw_nifscan_fdf %>% filter(`Family` != "TIGR00391")
+
+# count number of records for unique combinations of TIGRFAM, isolate, pro_query
+bcw_nifscan_fdf_grp <- bcw_nifscan_fdf %>% 
+  group_by(Family, isolate, Query_ID) %>% 
+  summarise(count=n())
+
+bcw_nifscan_fdf_grp
+
+# Identify which records have multiple hits returned
+
+bcw_nifscan_fdf_replicates <- bcw_nifscan_fdf_grp %>% 
+  filter(count != 1)
+
+bcw_nifscan_fdf_replicates
+
+```
+
+> Looking through records that indicate replicated hmmscan matches per unique query_ID and TIGRFAM_ID combination, there appears to be multiple matches to the same model for 920 genes. The maximum replication level is 2 (duplicates). A subsetted data frame should be made to look more closely at what is going on. 
+
+### De-duplicate the filtered data frame
+
+```{r}
+# count number of records for unique combinations of TIGRFAM, isolate, pro_query
+bcw_nifscan_fdf_dup <- bcw_nifscan_fdf %>% 
+  group_by(Family, isolate, Query_ID) %>% 
+  mutate(count = (n()))
+
+#?top_n - this function selects one based on value of a variable
+
+bcw_nifscan_fdf_dedup <- bcw_nifscan_fdf_dup %>% top_n(1, Coverage) # it works :)
+
+## Check 
+# went from 38 tigrfams with matches to 37 after filtering for coverage and e-value cutoffs. 
+bcw_nifscan_fdf_dedup$annotations <- as.factor(bcw_nifscan_fdf_dedup$annotations)
+bcw_nifscan_fdf_dup$annotations <- as.factor(bcw_nifscan_fdf_dup$annotations)
+bcw_nifscan_fdf$annotations <- as.factor(bcw_nifscan_fdf$annotations)
+bcw_nifscan_df$annotations <- as.factor(bcw_nifscan_df$annotations)
+
+# working backwards
+nlevels(bcw_nifscan_fdf_dedup$annotations)
+nlevels(bcw_nifscan_fdf_dup$annotations)
+nlevels(bcw_nifscan_fdf$annotations)
+nlevels(bcw_nifscan_df$annotations)
+```
+
+### Generate Counts for Heatmap
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+bcw_tigr_count <- bcw_nifscan_fdf_dedup %>% group_by(annotations, isolate) %>% count()
+
+# convert annotation calls to factor type
+bcw_tigr_count$annotations <- as.factor(bcw_tigr_count$annotations)
+
+# convert dataframe from narrow to wide format
+bcw_tigr_count_wide <- spread(bcw_tigr_count, isolate, n)
+
+# replace all NA values with count of '0'
+bcw_tigr_count_wide[is.na(bcw_tigr_count_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+bcw_tigr_count_wide <- as.matrix(bcw_tigr_count_wide)
+
+# transpose the matrix
+bcw_tigr_count_tpose <- t(bcw_tigr_count_wide)
+
+# Make row 1 = colnames
+colnames(bcw_tigr_count_tpose) <- bcw_tigr_count_tpose[1,]
+bcw_tigr_count_tpose <- bcw_tigr_count_tpose[-1,]
+
+# as.numeric
+
+class(bcw_tigr_count_tpose) <- "numeric"
+str(bcw_tigr_count_tpose)
+
+```
+
+### Make Heatmap
+
+### Subset to identify classic NIF isolates
+
+**Classic NIF operon defined as those isolates having genes for the following NIF genes:**
+
+* NIF H
+* NIF D
+* NIF K
+* NIF E
+* NIF N
+* NIF B
+
+```{r}
+bcw_tigr_count_df <- as.data.frame(bcw_tigr_count_tpose, row.names = rownames(bcw_tigr_count_tpose))
+#colnames(bcw_tigr_count_df)
+
+# make rownames column 1
+bcw_class_nif <- rownames_to_column(bcw_tigr_count_df, "isolate")
+
+# filter the dataframe to keep only rows that have at least one record for nifHDKENB
+bcw_class_nif <- bcw_class_nif %>% 
+  filter(nifH >= 1 &
+         nifD >= 1 &
+         nifK >= 1 &
+         nifE >= 1 &
+         nifN >= 1 &
+         nifB >= 1) %>%
+  select(-Mo_ABC_porter_NifC)  # drop "Mo_ABC_porter_NifC" hits due to high numbers that skew the data
+
+# revert to matrix
+bcw_class_nif_mat <- as.matrix(bcw_class_nif)
+
+# make rownames of matrix as column 1 (isolate)
+rownames(bcw_class_nif_mat) <- bcw_class_nif_mat[,1]
+bcw_class_nif_mat <- bcw_class_nif_mat[,-1]
+
+# make matrix numeric
+class(bcw_class_nif_mat) <- "numeric"
+
+# transpose the classical nif gene matrix
+bcw_class_nif_mat_t <- t(bcw_class_nif_mat)
+
+# make matrix numeric
+class(bcw_class_nif_mat_t) <- "numeric"
+
+# look at structure of matrix
+str(bcw_class_nif_mat)
+str(bcw_class_nif_mat_t)
+```
+
+## Make Data Frame for annotation taxonomic and Bin information for BCW Genomes
+
+```{r}
+# read in lca data file
+bcw_genome_k31_lca <- read.csv("./bcw_genomes_k31-smLCA-out.csv", header = T)
+#View(bcw_genome_k31_lca)
+
+# read in number of bins from metabat
+bcw_genome_bin_count <- read.csv("./bcw_bin_count.csv", header = F, col.names = c("ID", "n_bins"))
+
+# make annotation dataframe that has isolate, taxonomic family id and number of bins
+
+bcw_row_annotations <- inner_join(bcw_genome_k31_lca, bcw_genome_bin_count, by="ID") %>%
+  select(ID, genus, n_bins)
+
+# fill empty cells with "No Assignment"
+
+bcw_row_annotations$genus <- sub("^$", "No Assignment", bcw_row_annotations$genus)
+
+bcw_row_annotations$genus <- as.factor(bcw_row_annotations$genus)
+bcw_row_annotations$n_bins <- as.factor(bcw_row_annotations$n_bins)
+
+str(bcw_row_annotations)
+
+# row annotation subset to match surviving isolates with classical NIF genes
+
+bcw_row_annotations <- bcw_row_annotations[bcw_row_annotations$ID %in% bcw_class_nif$isolate,]
+
+rownames(bcw_row_annotations) <- rownames(bcw_class_nif_mat)
+
+bcw_row_annotations <- bcw_row_annotations[,-1]
+```
+
+
+## Make heatmap for BCW isolates that contain all 6 "Classical" NIF Genes.
+
+```{r}
+
+# Data frame with column annotations
+classic_hm_column <- data.frame(tigrfam = colnames(bcw_class_nif_mat))
+
+## match class description from map file with annotation value present in matrix
+classic_hm_column$Class <- tigr_def_list$Class[match(classic_hm_column$tigrfam, tigr_def_list$Annotation)]
+
+rownames(classic_hm_column) <- classic_hm_column$tigrfam
+
+classic_hm_column <- select(classic_hm_column, Class)
+
+col_groups <- unique(classic_hm_column$Class)
+
+# List of colors for each annotation
+classic_hm_colors <- list(class = brewer.pal(10, "Paired"))
+
+# Function to rotate column labels for isolates
+draw_colnames_45 <- function (coln, gaps, ...) {
+    coord <- pheatmap:::find_coordinates(length(coln), gaps)
+    x     <- coord$coord - 0.5 * coord$size
+    res   <- grid::textGrob(
+      coln, x = x, y = unit(1, "npc") - unit(3,"bigpts"),
+      vjust = 0.75, hjust = 0, rot = 315, gp = grid::gpar(...)
+    )
+    return(res)
+}
+assignInNamespace(
+  x = "draw_colnames",
+  value = "draw_colnames_45",
+  ns = asNamespace("pheatmap")
+)
+
+palette_length=13
+myColor <- c("Red", inferno(direction = -1, 13))
+# length(breaks) == length(paletteLength) + 1
+# use floor and ceiling to deal with even/odd length pallettelengths
+myBreaks <- c(seq(min(bcw_class_nif_mat), 0.99, length.out = 1),
+              seq(max(bcw_class_nif_mat)/palette_length, max(bcw_class_nif_mat), length.out = 13))
+
+# Make the heatmap
+hm_classic_nif_all_hmms <- 
+  pheatmap(
+  mat = bcw_class_nif_mat,
+  annotation_row = bcw_row_annotations,
+  annotation_names_col = T,
+  annotation_col = classic_hm_column,
+  annotation_colors = classic_hm_colors,
+  color = myColor,
+  breaks = myBreaks,
+  border_color = "grey39",
+  show_colnames = T,
+  show_rownames = T,
+  drop_levels = T,
+  fontsize = 4.5,
+  fontsize_row = 5,
+  fontsize_col = 5,
+  main = "BCW Isolates with nifHDKENB"
+)
+
+hm_classic_nif_all_hmms
+
+```
+
+
+
+Classic NIF only
+```{r}
+classic_nif <- c("nifH", "nifD", "nifK", "nifN", "nifE", "nifB")
+
+classic_nif_only <- filter(bcw_tigr_count, annotations %in% classic_nif)
+
+classic_nif_only_wide <- spread(classic_nif_only, isolate, n)
+
+# replace all NA values with count of '0'
+classic_nif_only_wide[is.na(classic_nif_only_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+classic_nif_only_wide <- as.matrix(classic_nif_only_wide)
+
+# transpose the matrix
+classic_nif_only_tpose <- t(classic_nif_only_wide)
+
+# Make row 1 = colnames
+colnames(classic_nif_only_tpose) <- classic_nif_only_tpose[1,]
+classic_nif_only_tpose <- classic_nif_only_tpose[-1,]
+str(classic_nif_only_tpose)
+
+# as.numeric
+
+class(classic_nif_only_tpose) <- "numeric"
+
+str(classic_nif_only_tpose)
+```
+
+```{r}
+pheatmap(
+  mat = classic_nif_only_tpose,
+  color = plasma(10),
+  border_color = T,
+  show_colnames = T,
+  show_rownames = T,
+  #annotation_row = classic_hm_colors,
+  drop_levels = T,
+  fontsize = 4,
+  main = "BCW Isolates with nifHDKENB"
+)
+```
+
+```{r}
+three_nif_types <- c("nifH", "nifD", "nifK", "nifN", "nifE", "nifB", "anfO_nitrog", "anfG_nitrog", "anfK_nitrog", "ANFD", "VnfG_nitrog", "vnfK_nitrog", "VNFD", "alt_nitrog_alpha_chain", "N2-ase-Ialpha")
+
+three_nif_types_only <- filter(bcw_tigr_count, annotations %in% three_nif_types)
+
+three_nif_types_only_wide <- spread(three_nif_types_only, isolate, n)
+
+# replace all NA values with count of '0'
+three_nif_types_only_wide[is.na(three_nif_types_only_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+three_nif_types_only_wide <- as.matrix(three_nif_types_only_wide)
+
+# Make row 1 = colnames
+rownames(three_nif_types_only_wide) <- three_nif_types_only_wide[,1]
+three_nif_types_only_wide <- three_nif_types_only_wide[,-1]
+str(three_nif_types_only_wide)
+
+# as.numeric
+
+class(three_nif_types_only_wide) <- "numeric"
+
+str(three_nif_types_only_wide)
+
+# Annotations for heatmap columns
+
+annotation_3nif <- data.frame(tigrfam = factor(rownames(three_nif_types_only_wide)))
+
+## match class description from map file with annotation value present in matrix
+annotation_3nif$Class <- as.factor(tigr_def_list$Class[match(annotation_3nif$tigrfam, tigr_def_list$Annotation)])
+
+rownames(annotation_3nif) <- rownames(three_nif_types_only_wide)
+
+annotation_3nif <- subset(annotation_3nif, select = Class)
+#annotation <- data.frame(Var1 = factor(1:10 %% 2 ==0, labels = c("Exp1", "Exp2")))
+
+```
+
+```{r}
+pheatmap(
+  mat = three_nif_types_only_wide,
+  annotation_row = annotation_3nif,
+  annotation_names_row = F,
+  color = plasma(direction = -1, 7),
+  border_color = "Grey39",
+  show_colnames = T,
+  show_rownames = T,
+  #annotation_row = classic_hm_colors,
+  drop_levels = T,
+  fontsize_row = 4,
+  fontsize_col = 4,
+  main = "BCW Isolates - Three Nif Gene Varieties",
+  legend_breaks = c(1,2,3,4,5,6,7),
+  legend_labels = c("1", "2", "3", "4", "5", "6", "7")
+)
+```
+
+
+## K. pneumoniae NIF Regulon (all BCW Genomes)
+
+
+### Read in meta data files
+```{r}
+
+# file containing map for ABB genome ID and BCW isolate ID
+abb_genome_bcw_labels <- read.csv("./abb_genome_bcw_labels.csv", header = T)
+
+# file containing taxonomic match from sourmash lca classify output with k-size of 31
+all_genome_k31_lca <- read.csv("./all_genomes_k31-smLCA-out.csv", header = T)
+
+```
+
+### Read in the hmmscan output files
+
+> Genomes 214 and 231 have zero hits. This is due to failure of sequencing or extremely low coverage. Output files were removed.
+
+> Note: If a table in the list of data.frames is empty, an error will occur when attempting to use mapply(cbind, df_list, "new_var"=v1, SIMPLIFY=F)
+
+```{r, message=FALSE}
+
+# Create a list of isolate genome IDs
+Kp_all_isolate_list <- read.table("./all_Kp_input.txt")
+
+# Read in the hmmscan Search output files for nif genes in each isolate's annotated faa list
+Kp_nifscan_list <- list.files(path = "NIFscan_v2_output/kleb_pneu", pattern = 'Kp_*', recursive = T, full.names = T)
+#Kp_nifscan_list
+
+# Create a list of Kleb_pneu nifscan search output tables
+Kp_nifscan_tbl_list <- lapply(Kp_nifscan_list, read_tsv)
+
+# Add a column to every table that indicates the isolate genome for each NIF-TIGRFAM hmmscan hit
+Kp_nifscan_tbl_list <- mapply(cbind, Kp_nifscan_tbl_list, "isolate"=Kp_all_isolate_list$V1, SIMPLIFY=F)
+
+# Create One Dataframe for NIF-TIGRFAM matches of all isolates
+Kp_nifscan_df <- do.call("rbind", Kp_nifscan_tbl_list)
+
+# Add a column to each record that adds annotation information for each TIGRFAM
+## Read in map file
+Kp_hmm_map <- read_tsv("./../NIF_operon_metadata/kleb_pneum_nif_regulon.txt", col_names = T)
+
+## match HMM annotation from kp_hmm_map to nifscan family name
+Kp_nifscan_df$gene <- Kp_hmm_map$gene[match(Kp_nifscan_df$Family, Kp_hmm_map$hmm)]
+
+## match ABB isolate ID on Kp_nifscan_df to BCW_ID on abb_genome_bcw_labels
+Kp_nifscan_df$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(Kp_nifscan_df$isolate, abb_genome_bcw_labels$ABB_ID)]
+
+
+nlevels(Kp_nifscan_df$BCW_ID)
+
+```
+
+> 481 of the 612 genomes being investigated returned a hmmscan hit to the TIGR01287 model for the nifH gene, where the lowest e-value observed for the match was 1.5e-06 from a Lactococcus (028-1 / BCW_201831.1)
+
+### 0.35 % hmm coverage
+
+```{r}
+Kp_nifscan_0.3_fdf <- psHMM_0.3_filter(Kp_nifscan_df) # Filtering with coverage >= 0.3 and E-val =< 1e-06 removes 2579 records
+#33969-31390
+#nlevels(Kp_nifscan_df$BCW_ID)
+#nlevels(Kp_nifscan_fdf$BCW_ID)
+
+#n_occur <- data.frame(table(abb_genome_bcw_labels$ABB_ID))
+
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.3_fdf_grp <- Kp_nifscan_0.3_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+Kp_nifscan_0.3_fdf_grp
+nlevels(Kp_nifscan_0.3_fdf$BCW_ID) %>% unique()
+
+# Identify which records have multiple hits returned
+
+Kp_nifscan_0.3_fdf_replicates <- Kp_nifscan_0.3_fdf_grp %>% 
+  filter(count != 1)
+
+Kp_nifscan_0.3_fdf_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.3_fdf_dup <- Kp_nifscan_0.3_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+nlevels(Kp_nifscan_0.3_fdf_dup$BCW_ID)
+
+#?top_n - this function selects one based on value of a variable
+
+Kp_nifscan_0.3_fdf_dedup <- Kp_nifscan_0.3_fdf_dup %>% top_n(1, Coverage) # it works :)
+nlevels(Kp_nifscan_0.3_fdf_dedup$BCW_ID)
+
+```
+
+
+#### Generate Counts for Heatmap
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+Kp_hmm_0.3_count <- Kp_nifscan_0.3_fdf_dedup %>% group_by(gene, BCW_ID) %>% count()
+nlevels(Kp_hmm_0.3_count$BCW_ID) %>% unique()
+# convert annotation calls to factor type
+Kp_hmm_0.3_count$gene <- as.factor(Kp_hmm_0.3_count$gene)
+
+# convert dataframe from narrow to wide format
+Kp_hmm_0.3_count_wide <- spread(Kp_hmm_0.3_count, BCW_ID, n, drop = F)
+
+# replace all NA values with count of '0'
+Kp_hmm_0.3_count_wide[is.na(Kp_hmm_0.3_count_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+Kp_hmm_0.3_count_wide <- as.matrix(Kp_hmm_0.3_count_wide)
+
+# transpose the matrix
+Kp_hmm_0.3_count_tpose <- t(Kp_hmm_0.3_count_wide)
+
+# Make row 1 = colnames
+colnames(Kp_hmm_0.3_count_tpose) <- Kp_hmm_0.3_count_tpose[1,]
+Kp_hmm_0.3_count_tpose <- Kp_hmm_0.3_count_tpose[-1,]
+
+# as.numeric
+class(Kp_hmm_0.3_count_tpose) <- "numeric"
+str(Kp_hmm_0.3_count_tpose)
+
+# customize the order of genes (columns)
+Kp_operon_order <- c("nifA",
+                     "nifL",
+                     "nifJ",
+                     "nifH",
+                     "nifD",
+                     "nifK",
+                     "nifE",
+                     "nifN",
+                     "nifU",
+                     "nifS",
+                     "nifV",
+                     "nifM",
+                     "nifW",
+                     "nifF",
+                     "nifB",
+                     "nifQ")
+# Re-order the columns
+Kp_hmm_0.3_count_tpose <- Kp_hmm_0.3_count_tpose[,Kp_operon_order]
+
+```
+
+#### Data Frame for Annotations
+
+```{r}
+
+# Data frame with Row annotations
+
+## read in number of bins from metabat
+all_genome_bin_count <- read.csv("./all_bin_count.csv", header = F, col.names = c("ID", "n_bins"))
+all_genome_bin_count$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_bin_count$ID, abb_genome_bcw_labels$ABB_ID)]
+
+all_genome_k31_lca$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_k31_lca$ID, abb_genome_bcw_labels$ABB_ID)]
+
+## make annotation dataframe that has BCW_ID, taxonomic family id and number of bins
+
+Kp_0.3_row_annotations <- data.frame(BCW_ID = rownames(Kp_hmm_0.3_count_tpose))
+  
+## match isolate BCW_ID with Taxonomy ID (family) from all_genome_k31_lca map file
+Kp_0.3_row_annotations$Genus <- all_genome_k31_lca$genus[match(Kp_0.3_row_annotations$BCW_ID, all_genome_k31_lca$BCW_ID)]
+
+## fill empty cells with "No Assignment"
+Kp_0.3_row_annotations$Genus <- sub("^$", "No Assignment", Kp_0.3_row_annotations$Genus)
+
+## match BCW_ID with number of metabat bins
+Kp_0.3_row_annotations$Bins <- all_genome_bin_count$n_bins[match(Kp_0.3_row_annotations$BCW_ID, all_genome_bin_count$BCW_ID)]
+
+## as factors
+Kp_0.3_row_annotations$Genus <- as.factor(Kp_0.3_row_annotations$Genus)
+Kp_0.3_row_annotations$Bins <- as.factor(Kp_0.3_row_annotations$Bins)
+
+## adjust rownames
+rownames(Kp_0.3_row_annotations) <- rownames(Kp_hmm_0.3_count_tpose)
+Kp_0.3_row_annotations <- Kp_0.3_row_annotations %>% select(Genus, Bins)
+
+str(Kp_0.3_row_annotations)
+
+# Data frame with column annotations
+Kp_0.3_column_annotations <- data.frame(gene = colnames(Kp_hmm_0.3_count_tpose))
+
+## match gene description from map file with Annotation value present in matrix
+Kp_0.3_column_annotations$Annotation <- Kp_hmm_map$annotation[match(Kp_0.3_column_annotations$gene, Kp_hmm_map$gene)]
+
+## match nif Operon membership to gene name
+Kp_0.3_column_annotations$Operon <- Kp_hmm_map$operon[match(Kp_0.3_column_annotations$gene, Kp_hmm_map$gene)]
+
+## adjust rownames
+rownames(Kp_0.3_column_annotations) <- colnames(Kp_hmm_0.3_count_tpose)
+Kp_0.3_column_annotations <- Kp_0.3_column_annotations %>% select(Annotation, Operon)
+
+```
+
+#### Make heatmap
+
+```{r}
+library(RColorBrewer)
+n <- 30
+genus_palette <- distinctColorPalette(n)
+
+
+#pie(rep(1, n), col=genus_palette)
+
+
+```
+
+
+```{r}
+
+# List of colors for each annotation
+newCols_0.3 <- colorRampPalette(grDevices::rainbow(length(unique(Kp_0.3_row_annotations$Genus))))
+mycolors_0.3 <- newCols_0.3(length(unique(Kp_0.3_row_annotations$Genus)))
+names(mycolors_0.3) <- unique(Kp_0.3_row_annotations$Genus)
+mycolors_0.3 <- list(Genus = mycolors_0.3)
+
+# Function to rotate column labels for isolates
+draw_colnames_45 <- function (coln, gaps, ...) {
+    coord <- pheatmap:::find_coordinates(length(coln), gaps)
+    x     <- coord$coord - 0.5 * coord$size
+    res   <- grid::textGrob(
+      coln, x = x, y = unit(1, "npc") - unit(3,"bigpts"),
+      vjust = 0.75, hjust = 0, rot = 315, gp = grid::gpar(...)
+    )
+    return(res)
+}
+assignInNamespace(
+  x = "draw_colnames",
+  value = "draw_colnames_45",
+  ns = asNamespace("pheatmap")
+)
+
+palette_length=13
+Kp_Color <- c("grey91", viridis(direction = -1, 51))
+# length(breaks) == length(paletteLength) + 1
+# use floor and ceiling to deal with even/odd length pallettelengths
+#Kp_Breaks <- c(seq(min(Kp_hmm_count_tpose), 0, length.out = 1),
+#              seq(max(Kp_hmm_count_tpose)/palette_length, #max(Kp_hmm_count_tpose), length.out = 51))
+
+# Make the heatmap
+Kp_nif_0.3_hm <- 
+  pheatmap(
+  mat = Kp_hmm_0.3_count_tpose,
+  cluster_cols = F,
+  cellwidth = 20,
+  annotation_row = Kp_0.3_row_annotations,
+  annotation_names_col = T,
+  annotation_col = Kp_0.3_column_annotations,
+  annotation_colors = mycolors_0.3,
+  color = Kp_Color,
+
+  border_color = "grey39",
+  show_colnames = T,
+  show_rownames = T,
+  drop_levels = T,
+  fontsize = 5,
+  fontsize_row = 1,
+  fontsize_col = 7,
+  main = "Klebsiella pneumoniae NIF Regulon Hits"
+)
+
+
+
+Kp_nif_0.3_hm
+#  breaks = Kp_Breaks,
+```
+
+> Several blocks identified. Some appear to follow the Klebsiella pneumoniae NIF regulon, others not.
+
+### 0.5 % hmm coverage
+
+```{r}
+Kp_nifscan_0.5_fdf <- psHMM_0.5_filter(Kp_nifscan_df) # Filtering with coverage >= 0.5 and E-val =< 1e-06 
+
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.5_fdf_grp <- Kp_nifscan_0.5_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+Kp_nifscan_0.5_fdf_grp
+nlevels(Kp_nifscan_0.5_fdf$BCW_ID) %>% unique()
+# Identify which records have multiple hits returned
+
+Kp_nifscan_0.5_fdf_replicates <- Kp_nifscan_0.5_fdf_grp %>% 
+  filter(count != 1)
+
+Kp_nifscan_0.5_fdf_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.5_fdf_dup <- Kp_nifscan_0.5_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+
+Kp_nifscan_0.5_fdf_dedup <- Kp_nifscan_0.5_fdf_dup %>% top_n(1, Coverage)
+
+```
+
+
+#### Generate Counts for Heatmap
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+Kp_hmm_0.5_count <- Kp_nifscan_0.5_fdf_dedup %>% group_by(gene, BCW_ID) %>% count()
+nlevels(Kp_hmm_0.5_count$BCW_ID) %>% unique()
+# convert annotation calls to factor type
+Kp_hmm_0.5_count$gene <- as.factor(Kp_hmm_0.5_count$gene)
+
+# convert dataframe from narrow to wide format
+Kp_hmm_0.5_count_wide <- spread(Kp_hmm_0.5_count, BCW_ID, n, drop = F)
+
+# replace all NA values with count of '0'
+Kp_hmm_0.5_count_wide[is.na(Kp_hmm_0.5_count_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+Kp_hmm_0.5_count_wide <- as.matrix(Kp_hmm_0.5_count_wide)
+
+# transpose the matrix
+Kp_hmm_0.5_count_tpose <- t(Kp_hmm_0.5_count_wide)
+
+# Make row 1 = colnames
+colnames(Kp_hmm_0.5_count_tpose) <- Kp_hmm_0.5_count_tpose[1,]
+Kp_hmm_0.5_count_tpose <- Kp_hmm_0.5_count_tpose[-1,]
+
+# as.numeric
+class(Kp_hmm_0.5_count_tpose) <- "numeric"
+str(Kp_hmm_0.5_count_tpose)
+
+# Re-order the columns
+Kp_hmm_0.5_count_tpose <- Kp_hmm_0.5_count_tpose[,Kp_operon_order]
+
+```
+
+#### Data Frame for Annotations
+
+```{r}
+
+# Data frame with Row annotations
+## make annotation dataframe that has BCW_ID, taxonomic family id and number of bins
+
+Kp_0.5_row_annotations <- data.frame(BCW_ID = rownames(Kp_hmm_0.5_count_tpose))
+  
+## match isolate BCW_ID with Taxonomy ID (family) from all_genome_k31_lca map file
+Kp_0.5_row_annotations$Genus <- all_genome_k31_lca$genus[match(Kp_0.5_row_annotations$BCW_ID, all_genome_k31_lca$BCW_ID)]
+
+## fill empty cells with "No Assignment"
+Kp_0.5_row_annotations$Genus <- sub("^$", "No Assignment", Kp_0.5_row_annotations$Genus)
+
+## match BCW_ID with number of metabat bins
+Kp_0.5_row_annotations$Bins <- all_genome_bin_count$n_bins[match(Kp_0.5_row_annotations$BCW_ID, all_genome_bin_count$BCW_ID)]
+
+## as factors
+Kp_0.5_row_annotations$Genus <- as.factor(Kp_0.5_row_annotations$Genus)
+Kp_0.5_row_annotations$Bins <- as.factor(Kp_0.5_row_annotations$Bins)
+
+## adjust rownames
+rownames(Kp_0.5_row_annotations) <- rownames(Kp_hmm_0.5_count_tpose)
+Kp_0.5_row_annotations <- Kp_0.5_row_annotations %>% select(Genus, Bins)
+
+str(Kp_0.5_row_annotations)
+
+# Data frame with column annotations
+Kp_0.5_column_annotations <- data.frame(gene = colnames(Kp_hmm_0.5_count_tpose))
+
+## match gene description from map file with Annotation value present in matrix
+Kp_0.5_column_annotations$Annotation <- Kp_hmm_map$annotation[match(Kp_0.5_column_annotations$gene, Kp_hmm_map$gene)]
+
+## match nif Operon membership to gene name
+Kp_0.5_column_annotations$Operon <- Kp_hmm_map$operon[match(Kp_0.5_column_annotations$gene, Kp_hmm_map$gene)]
+
+## adjust rownames
+rownames(Kp_0.5_column_annotations) <- colnames(Kp_hmm_0.5_count_tpose)
+Kp_0.5_column_annotations <- Kp_0.5_column_annotations %>% select(Annotation, Operon)
+
+```
+
+#### Make heatmap
+
+```{r}
+n <- 30
+palette <- distinctColorPalette(n)
+pie(rep(1, n), col=palette)
+
+# Specify colors
+annotation_colors = list(
+  Genus = c(Exp1="black", None="white"),
+  Var1.1 = c(Exp1="black", None="white"))
+
+```
+
+
+```{r}
+
+# List of colors for each annotation
+newCols_0.5 <- colorRampPalette(colorRamps::primary.colors(length(unique(Kp_0.5_row_annotations$Genus))))
+mycolors_0.5 <- newCols_0.5(length(unique(Kp_0.5_row_annotations$Genus)))
+names(mycolors_0.5) <- unique(Kp_0.5_row_annotations$Genus)
+mycolors_0.5 <- list(Genus = mycolors_0.5)
+
+# Function to rotate column labels for isolates
+draw_colnames_45 <- function (coln, gaps, ...) {
+    coord <- pheatmap:::find_coordinates(length(coln), gaps)
+    x     <- coord$coord - 0.5 * coord$size
+    res   <- grid::textGrob(
+      coln, x = x, y = unit(1, "npc") - unit(3,"bigpts"),
+      vjust = 0.75, hjust = 0, rot = 315, gp = grid::gpar(...)
+    )
+    return(res)
+}
+assignInNamespace(
+  x = "draw_colnames",
+  value = "draw_colnames_45",
+  ns = asNamespace("pheatmap")
+)
+
+palette_length=13
+Kp_Color <- c("grey91", viridis(direction = -1, 51))
+# length(breaks) == length(paletteLength) + 1
+# use floor and ceiling to deal with even/odd length pallettelengths
+#Kp_Breaks <- c(seq(min(Kp_hmm_count_tpose), 0, length.out = 1),
+#              seq(max(Kp_hmm_count_tpose)/palette_length, #max(Kp_hmm_count_tpose), length.out = 51))
+
+# Make the heatmap
+Kp_nif_0.5_hm <- 
+  pheatmap(
+  mat = Kp_hmm_0.5_count_tpose,
+  cluster_cols = F,
+  cellwidth = 15,
+  annotation_row = Kp_0.5_row_annotations,
+  annotation_names_col = F,
+  annotation_col = Kp_0.5_column_annotations,
+  annotation_colors = mycolors_0.5,
+  color = Kp_Color,
+  border_color = "grey39",
+  show_colnames = T,
+  show_rownames = T,
+  drop_levels = T,
+  fontsize = 5,
+  fontsize_row = 1,
+  fontsize_col = 7,
+  main = "Klebsiella pneumoniae NIF Regulon Hits"
+)
+
+Kp_nif_0.5_hm
+#  breaks = Kp_Breaks,
+```
+
+### 0.85 % hmm coverage
+
+```{r}
+Kp_nifscan_0.9_fdf <- psHMM_0.9_filter(Kp_nifscan_df) # Filtering with coverage >= 0.9 and E-val =< 1e-06 
+
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.9_fdf_grp <- Kp_nifscan_0.9_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+Kp_nifscan_0.9_fdf_grp
+nlevels(Kp_nifscan_0.9_fdf$BCW_ID) %>% unique()
+# Identify which records have multiple hits returned
+
+Kp_nifscan_0.9_fdf_replicates <- Kp_nifscan_0.9_fdf_grp %>% 
+  filter(count != 1)
+
+Kp_nifscan_0.9_fdf_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.9_fdf_dup <- Kp_nifscan_0.9_fdf %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+
+Kp_nifscan_0.9_fdf_dedup <- Kp_nifscan_0.9_fdf_dup %>% top_n(1, Coverage)
+
+```
+
+
+#### Generate Counts for Heatmap
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+Kp_hmm_0.9_count <- Kp_nifscan_0.9_fdf_dedup %>% group_by(gene, BCW_ID) %>% count()
+nlevels(Kp_hmm_0.9_count$BCW_ID) %>% unique()
+# convert annotation calls to factor type
+Kp_hmm_0.9_count$gene <- as.factor(Kp_hmm_0.9_count$gene)
+
+# convert dataframe from narrow to wide format
+Kp_hmm_0.9_count_wide <- spread(Kp_hmm_0.9_count, BCW_ID, n, drop = F)
+
+# replace all NA values with count of '0'
+Kp_hmm_0.9_count_wide[is.na(Kp_hmm_0.9_count_wide)] <- 0
+
+# convert the data frame to a matrix for the heatmap
+Kp_hmm_0.9_count_wide <- as.matrix(Kp_hmm_0.9_count_wide)
+
+# transpose the matrix
+Kp_hmm_0.9_count_tpose <- t(Kp_hmm_0.9_count_wide)
+
+# Make row 1 = colnames
+colnames(Kp_hmm_0.9_count_tpose) <- Kp_hmm_0.9_count_tpose[1,]
+Kp_hmm_0.9_count_tpose <- Kp_hmm_0.9_count_tpose[-1,]
+
+# as.numeric
+class(Kp_hmm_0.9_count_tpose) <- "numeric"
+str(Kp_hmm_0.9_count_tpose)
+
+# Re-order the columns
+Kp_hmm_0.9_count_tpose <- Kp_hmm_0.9_count_tpose[,Kp_operon_order]
+
+```
+
+#### Make Data Frame for annotation taxonomic and Bin information for BCW Genomes
+
+```{r}
+
+# Data frame with Row annotations
+## make annotation dataframe that has BCW_ID, taxonomic family id and number of bins
+
+Kp_0.9_row_annotations <- data.frame(BCW_ID = rownames(Kp_hmm_0.9_count_tpose))
+  
+## match isolate BCW_ID with Taxonomy ID (family) from all_genome_k31_lca map file
+Kp_0.9_row_annotations$Genus <- all_genome_k31_lca$genus[match(Kp_0.9_row_annotations$BCW_ID, all_genome_k31_lca$BCW_ID)]
+
+## fill empty cells with "No Assignment"
+Kp_0.9_row_annotations$Genus <- sub("^$", "No Assignment", Kp_0.9_row_annotations$Genus)
+
+## match BCW_ID with number of metabat bins
+Kp_0.9_row_annotations$Bins <- all_genome_bin_count$n_bins[match(Kp_0.9_row_annotations$BCW_ID, all_genome_bin_count$BCW_ID)]
+
+## as factors
+Kp_0.9_row_annotations$Genus <- as.factor(Kp_0.9_row_annotations$Genus)
+Kp_0.9_row_annotations$Bins <- as.factor(Kp_0.9_row_annotations$Bins)
+
+## adjust rownames
+rownames(Kp_0.9_row_annotations) <- rownames(Kp_hmm_0.9_count_tpose)
+Kp_0.9_row_annotations <- Kp_0.9_row_annotations %>% select(Genus, Bins)
+
+str(Kp_0.9_row_annotations)
+
+# Data frame with column annotations
+Kp_0.9_column_annotations <- data.frame(gene = colnames(Kp_hmm_0.9_count_tpose))
+
+## match gene description from map file with Annotation value present in matrix
+Kp_0.9_column_annotations$Annotation <- Kp_hmm_map$annotation[match(Kp_0.9_column_annotations$gene, Kp_hmm_map$gene)]
+
+## match nif Operon membership to gene name
+Kp_0.9_column_annotations$Operon <- Kp_hmm_map$operon[match(Kp_0.9_column_annotations$gene, Kp_hmm_map$gene)]
+
+## adjust rownames
+rownames(Kp_0.9_column_annotations) <- colnames(Kp_hmm_0.9_count_tpose)
+Kp_0.9_column_annotations <- Kp_0.9_column_annotations %>% select(Annotation, Operon)
+
+```
+
+#### Make heatmap
+
+```{r}
+
+# List of colors for each annotation
+newCols_0.9 <- colorRampPalette(colorRamps::primary.colors(length(unique(Kp_0.9_row_annotations$Genus))))
+mycolors_0.9 <- newCols_0.9(length(unique(Kp_0.9_row_annotations$Genus)))
+names(mycolors_0.9) <- unique(Kp_0.9_row_annotations$Genus)
+mycolors_0.9 <- list(Genus = mycolors_0.9)
+
+# Function to rotate column labels for isolates
+draw_colnames_45 <- function (coln, gaps, ...) {
+    coord <- pheatmap:::find_coordinates(length(coln), gaps)
+    x     <- coord$coord - 0.9 * coord$size
+    res   <- grid::textGrob(
+      coln, x = x, y = unit(1, "npc") - unit(3,"bigpts"),
+      vjust = 0.75, hjust = 0, rot = 315, gp = grid::gpar(...)
+    )
+    return(res)
+}
+assignInNamespace(
+  x = "draw_colnames",
+  value = "draw_colnames_45",
+  ns = asNamespace("pheatmap")
+)
+
+palette_length=13
+Kp_Color <- c("grey91", viridis(direction = -1, 51))
+# length(breaks) == length(paletteLength) + 1
+# use floor and ceiling to deal with even/odd length pallettelengths
+#Kp_Breaks <- c(seq(min(Kp_hmm_count_tpose), 0, length.out = 1),
+#              seq(max(Kp_hmm_count_tpose)/palette_length, #max(Kp_hmm_count_tpose), length.out = 51))
+
+# Make the heatmap
+Kp_nif_0.9_hm <- 
+  pheatmap(
+  mat = Kp_hmm_0.9_count_tpose,
+  cluster_cols = F,
+  cellwidth = 15,
+  annotation_row = Kp_0.9_row_annotations,
+  annotation_names_col = F,
+  annotation_col = Kp_0.9_column_annotations,
+  annotation_colors = mycolors_0.9,
+  color = Kp_Color,
+  border_color = "grey39",
+  show_colnames = T,
+  show_rownames = T,
+  drop_levels = T,
+  fontsize = 5,
+  fontsize_row = 1,
+  fontsize_col = 7,
+  main = "Klebsiella pneumoniae NIF Regulon Hits"
+)
+
+Kp_nif_0.9_hm
+#  breaks = Kp_Breaks,
+```
+
+# Complex Heatmaps
+
+## Read in 15N Data
+
+```{r}
+# Read in csv of 15N/14N ratio for each isolate
+N15_ratios <- read.csv("./../15N_analysis/PGP_15N_data.csv", header = T)
+
+# Create data frame for annotation on heatmap
+
+ha_15N <- data.frame("BCW_ID" = rownames(Kp_hmm_0.3_count_tpose))
+
+ha_15N$ratio <- N15_ratios$ratio[match(ha_15N$BCW_ID, N15_ratios$BCW_ID)]
+
+ha_15N$ratio[is.na(ha_15N$ratio)] <- 0
+
+
+```
+
+> Plotting in the R Notebook and the Rstudio panel caused R Studio to crash repeatedly. I have chosen to code for plots in Rscripts.
+
+## 35% model coverage
+### Data
+```{r}
+library(circlize)
+library(ComplexHeatmap)
+
+## 35 % hmm coverage for hits to genes in Kp nif regulon
+
+# Formatting the data
+## make a dataframe with a column of count data for each isolate-nif_gene pair
+Kp_hmm_0.3_df <- spread(Kp_hmm_0.3_count, gene, n)
+
+## create matrix from dataframe
+Kp_hmm_0.3_mat <- as.matrix(Kp_hmm_0.3_df[, grep("nif", colnames(Kp_hmm_0.3_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.3_mat) <- Kp_hmm_0.3_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.3_mat[is.na(Kp_hmm_0.3_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.3_mat <- Kp_hmm_0.3_mat[,Kp_operon_order]
+
+## add column to df with 15N/14N ratio data
+Kp_hmm_0.3_df$N_ratio <- N15_ratios$ratio[match(Kp_hmm_0.3_df$BCW_ID, N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+Kp_hmm_0.3_df$Genus <- all_genome_k31_lca$genus[match(Kp_hmm_0.3_df$BCW_ID, all_genome_k31_lca$BCW_ID)]
+Kp_hmm_0.3_df$Genus <- sub("^$", "unassigned", Kp_hmm_0.3_df$Genus) # fill empty values as 'unassigned'
+
+## add column to df with bin information for each isolate
+```
+
+
+## Annotations
+```{r}
+# column annotations
+## Nif Operon
+### Make data frames for the annotation objects
+Kp_nif_operon <- data.frame("Operon" = Kp_0.3_column_annotations$Operon)
+Kp_nif_function <- data.frame("Function" = Kp_0.3_column_annotations$Annotation)
+
+Kp_operon_cha <-
+  HeatmapAnnotation(df = Kp_nif_operon,
+                    col = list(Operon = c("nifRLA" = "Red",
+                                          "nifJ" = "Blue",
+                                          "nifHDK" = "Green",
+                                          "nifEN" = "Purple",
+                                          "nifUSVM" = "Black",
+                                          "nifWF" = "Brown",
+                                          "nifBQ" = "Orange")),
+                    annotation_height = unit(1.5, "mm"),
+                    annotation_legend_param = list(Operon = list(ncol = 7, legend_direction = "horizontal")), show_legend = FALSE)
+
+## Nif Gene Function
+Kp_Function_cha <- 
+  HeatmapAnnotation(df = Kp_nif_function,
+                    col = list(Function = c("Regulatory" = "Magenta",
+                                            "Redox" = "turquoise1",
+                                            "Catalytic" = "limegreen",
+                                            "Cofactor Syn." = "peru",
+                                            "Unknown" = "slateblue1")),
+                    annotation_height = unit(2.5, "mm"),
+                    annotation_legend_param = list(Function = list(ncol = 5, legend_direction = "horizontal", title = "")))
+# Row annotation
+### Make Dataframe for annotation objects
+Kp_nif_genus <- data.frame("Genus" = all_genome_k31_lca$genus)
+Kp_nif_genus$Genus <- sub("^$", "Unassigned", Kp_nif_genus$Genus)
+
+colormap <- colorRamp2(seq(0, 51, length.out = 51), viridis(direction = -1, 51))
+
+genus_colors_0.3 <- distinctColorPalette(length(unique(Kp_hmm_0.3_df$Genus)))
+```
+
+### Plot
+
+```{r}
+# 35% Coverage plot
+
+Kp_0.3_chm_1 <- 
+Heatmap(Kp_hmm_0.3_mat,
+        name = "HMM Hits",
+        col = colormap,
+        cluster_columns = F,
+        heatmap_legend_param = list(at = seq(0, 50, 2)),
+        top_annotation = Kp_Function_cha,
+        bottom_annotation = Kp_operon_cha,
+        row_names_gp = gpar(fontsize = 1.5))
+
+Kp_0.3_chm_2 <-
+  Heatmap(Kp_hmm_0.3_df$Genus, name = "Genus", col = genus_colors_0.3, 
+          width = unit(5, "mm"))
+
+Kp_0.3_chm_3 <-
+  Heatmap(Kp_hmm_0.3_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_0.3_list <- Kp_0.3_chm_1 + Kp_0.3_chm_2 + Kp_0.3_chm_3
+
+#draw(Kp_0.3_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+
+## 50 % model coverage
+### Data
+
+```{r}
+# Formatting the data
+## make a dataframe with a column of count data for each isolate-nif_gene pair
+Kp_hmm_0.5_df <- spread(Kp_hmm_0.5_count, gene, n)
+
+## create matrix from dataframe
+Kp_hmm_0.5_mat <- as.matrix(Kp_hmm_0.5_df[, grep("nif", colnames(Kp_hmm_0.5_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.5_mat) <- Kp_hmm_0.5_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.5_mat[is.na(Kp_hmm_0.5_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.5_mat <- Kp_hmm_0.5_mat[,Kp_operon_order]
+
+## add column to df with 15N/14N ratio data
+Kp_hmm_0.5_df$N_ratio <- N15_ratios$ratio[match(Kp_hmm_0.5_df$BCW_ID, N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+Kp_hmm_0.5_df$Genus <- all_genome_k31_lca$genus[match(Kp_hmm_0.5_df$BCW_ID, all_genome_k31_lca$BCW_ID)]
+Kp_hmm_0.5_df$Genus <- sub("^$", "unassigned", Kp_hmm_0.5_df$Genus) # fill empty values as 'unassigned'
+
+## add column to df with bin information for each isolate
+```
+
+### Annotations
+
+```{r}
+# column annotations
+## Nif Operon
+### Make data frames for the annotation objects
+Kp_nif_operon <- data.frame("Operon" = Kp_0.5_column_annotations$Operon)
+Kp_nif_function <- data.frame("Function" = Kp_0.5_column_annotations$Annotation)
+
+# Row annotation
+### Make Dataframe for annotation objects
+Kp_nif_genus <- data.frame("Genus" = all_genome_k31_lca$genus)
+Kp_nif_genus$Genus <- sub("^$", "Unassigned", Kp_nif_genus$Genus)
+
+colormap_Kp_0.5 <- colorRamp2(seq(0, 21, length.out = 22), viridis(direction = -1, 22))
+
+genus_colors_0.5 <- distinctColorPalette(length(unique(Kp_hmm_0.5_df$Genus)))
+```
+
+### Plot
+
+```{r}
+Kp_0.5_chm_1 <- 
+  Heatmap(Kp_hmm_0.5_mat,
+          name = "HMM Hits",
+          col = colormap_Kp_0.5,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 20, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.5))
+
+Kp_0.5_chm_2 <-
+  Heatmap(Kp_hmm_0.5_df$Genus, name = "Genus", col = genus_colors_0.5, 
+          width = unit(5, "mm"))
+
+Kp_0.5_chm_3 <-
+  Heatmap(Kp_hmm_0.5_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_0.5_list <- Kp_0.5_chm_1 + Kp_0.5_chm_2 + Kp_0.5_chm_3
+
+#draw(Kp_0.5_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+## 85% model coverage
+### Data
+
+```{r}
+# Formatting the data
+## make a dataframe with a column of count data for each isolate-nif_gene pair
+Kp_hmm_0.9_df <- spread(Kp_hmm_0.9_count, gene, n, drop = F)
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_df[is.na(Kp_hmm_0.9_df)] <- 0
+
+## create matrix from dataframe
+Kp_hmm_0.9_mat <- as.matrix(Kp_hmm_0.9_df[, grep("nif", colnames(Kp_hmm_0.9_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_mat) <- Kp_hmm_0.9_df$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_mat <- Kp_hmm_0.9_mat[,Kp_operon_order]
+
+## add column to df with 15N/14N ratio data
+Kp_hmm_0.9_df$N_ratio <- N15_ratios$ratio[match(Kp_hmm_0.9_df$BCW_ID, N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+Kp_hmm_0.9_df$Genus <- all_genome_k31_lca$genus[match(Kp_hmm_0.9_df$BCW_ID, all_genome_k31_lca$BCW_ID)]
+Kp_hmm_0.9_df$Genus <- sub("^$", "unassigned", Kp_hmm_0.9_df$Genus) # fill empty values as 'unassigned'
+
+## assign a unique color to each genus
+genus_color_df <- data.frame(Genus = unique(Kp_hmm_0.9_df$Genus), Color =  distinctColorPalette(length(unique(Kp_hmm_0.9_df$Genus))))
+### match
+Kp_hmm_0.9_df$Color <- genus_color_df$Color[match(Kp_hmm_0.9_df$Genus, genus_color_df$Genus)]
+
+## add column to df with bin information for each isolate
+Kp_hmm_0.9_df$n_bins <- all_genome_bin_count$n_bins[match(Kp_hmm_0.9_df$BCW_ID, all_genome_bin_count$BCW_ID)]
+
+## write csv file with BCW_ID and genus classification
+bcw_id_genus <- select(Kp_hmm_0.9_df, "BCW_ID", "Genus")
+write_csv(bcw_id_genus, "./bcw_id_genus.csv")
+```
+
+### Annotations
+
+```{r}
+# column annotations
+## Nif Operon
+### Make data frames for the annotation objects
+Kp_nif_operon <- data.frame("Operon" = Kp_0.9_column_annotations$Operon)
+Kp_nif_function <- data.frame("Function" = Kp_0.9_column_annotations$Annotation)
+
+# Row annotation
+### Make Dataframe for annotation objects
+Kp_nif_genus <- data.frame("Genus" = all_genome_k31_lca$genus)
+Kp_nif_genus$Genus <- sub("^$", "Unassigned", Kp_nif_genus$Genus)
+
+colormap_Kp_0.9 <- colorRamp2(seq(0, 13, length.out = 14), viridis(direction = -1, 14))
+
+genus_colors_0.9 <- distinctColorPalette(length(unique(Kp_hmm_0.9_df$Genus)))
+
+
+```
+
+### Plot
+
+```{r}
+Kp_0.9_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_mat,
+          name = "HMM Hits",
+          col = colormap_Kp_0.9,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 13, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.1))
+
+Kp_0.9_chm_2 <-
+  Heatmap(Kp_hmm_0.9_df$Genus, name = "Genus", col = genus_colors_0.9, 
+          width = unit(5, "mm"))
+
+#Kp_0.9_chm_3 <-
+#  Heatmap(Kp_hmm_0.9_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, #"mm"))
+
+Kp_0.9_list <- Kp_0.9_chm_1 + Kp_0.9_chm_2
+
+#draw(Kp_0.9_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+
+## Filtered Plots
+
+### 85 % Model Without Regulatory + Santos Set
+#### Data
+```{r}
+# Create Filtered Data Frame
+Kp_hmm_0.9_hiN_nonKP_df <- filter(Kp_hmm_0.9_df,
+                                  nifA == 0 &
+                                    nifL == 0 &
+                                    nifH == 0 &
+                                    nifD == 0 &
+                                    nifK == 0 &
+                                    nifE == 0 &
+                                    nifN == 0 &
+                                    nifB == 0 &
+                                    N_ratio >= 1.2)
+
+## create matrix from dataframe
+Kp_hmm_0.9_hiN_nonKP_mat <- as.matrix(Kp_hmm_0.9_hiN_nonKP_df[, grep("nif", colnames(Kp_hmm_0.9_hiN_nonKP_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_hiN_nonKP_mat) <- Kp_hmm_0.9_hiN_nonKP_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_hiN_nonKP_mat[is.na(Kp_hmm_0.9_hiN_nonKP_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_hiN_nonKP_mat <- Kp_hmm_0.9_hiN_nonKP_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_hiN_nonKP_mat)
+```
+
+#### Annotations
+
+```{r}
+
+colormap_nonKp_hiN_0.9cov <- colorRamp2(seq(0, 4, length.out = 5), inferno(direction = -1, 5))
+
+genus_colors_nonKp_hiN_0.9cov <- distinctColorPalette(length(unique(Kp_hmm_0.9_hiN_nonKP_df$Genus)))
+
+```
+
+
+#### Plot
+
+```{r}
+nonKp_0.9cov_hiN_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_hiN_nonKP_mat,
+          name = "HMM Hits",
+          col = colormap_nonKp_hiN_0.9cov,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 5, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 5))
+
+nonKp_0.9cov_hiN_chm_2 <-
+  Heatmap(Kp_hmm_0.9_hiN_nonKP_df$Genus, name = "Genus", col = genus_colors_nonKp_hiN_0.9cov, 
+          width = unit(5, "mm"))
+
+nonKp_0.9cov_hiN_chm_3 <-
+  Heatmap(Kp_hmm_0.9_hiN_nonKP_df$N_ratio, name = "15N/14N", col = viridis(direction = -1, 6), width = unit(5, "mm"))
+
+nonKp_0.9cov_hiN_list <- nonKp_0.9cov_hiN_chm_1 + nonKp_0.9cov_hiN_chm_2 + nonKp_0.9cov_hiN_chm_3
+
+#draw(nonKp_0.9cov_hiN_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+## Figure 2
+### 85% cov: Santos (+) - Group A
+#### Data
+```{r}
+
+# Create Filtered Data Frame that satisfies the conditions of Santos minimum gene set:
+
+Kp_hmm_0.9_santos_pos_df <- filter(Kp_hmm_0.9_df,
+                                    nifH >= 1 &
+                                    nifD >= 1 &
+                                    nifK >= 1 &
+                                    nifE >= 1 &
+                                    nifN >= 1 &
+                                    nifB >= 1
+                              )
+
+## create matrix from dataframe
+Kp_hmm_0.9_santos_pos_mat <- as.matrix(Kp_hmm_0.9_santos_pos_df[, grep("nif", colnames(Kp_hmm_0.9_santos_pos_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_santos_pos_mat) <- Kp_hmm_0.9_santos_pos_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+#Kp_hmm_0.9_santos_pos_mat[is.na(Kp_hmm_0.9_santos_pos_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_santos_pos_mat <- Kp_hmm_0.9_santos_pos_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_santos_pos_mat)
+```
+
+#### Annotations
+
+```{r}
+
+colormap_santos_pos_0.9cov <- colorRamp2(seq(0, 13, length.out = 14), viridis(direction = -1, 14))
+
+genus_colors_santos_pos_0.9cov <- unique(Kp_hmm_0.9_santos_pos_df$Color)
+
+```
+
+#### Plot - Group A - Clustered (C1)
+
+```{r}
+Kp_hmm_0.9_santos_pos_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_santos_pos_mat,
+          name = "HMM Hits",
+          col = colormap_santos_pos_0.9cov,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 13, 1),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(10, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1))
+
+Kp_hmm_0.9_santos_pos_chm_2 <-
+  Heatmap(Kp_hmm_0.9_santos_pos_df$Genus,
+          name = "Genus",
+          show_column_names = FALSE,
+          col = genus_colors_santos_pos_0.9cov,
+          heatmap_legend_param = list(ncol = 4,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_santos_pos_chm_3 <-
+  Heatmap(Kp_hmm_0.9_santos_pos_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.9_santos_pos_list <- Kp_hmm_0.9_santos_pos_chm_1 + Kp_hmm_0.9_santos_pos_chm_2
+
+
+Kp_hmm_0.9_santos_pos_chm <- 
+draw(Kp_hmm_0.9_santos_pos_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group A - 15N_Ranked (R1)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_santos_pos_df_rnk <- Kp_hmm_0.9_santos_pos_df[order(Kp_hmm_0.9_santos_pos_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_santos_pos_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_santos_pos_mat_rnk <- as.matrix(Kp_hmm_0.9_santos_pos_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_santos_pos_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_santos_pos_mat_rnk) <- Kp_hmm_0.9_santos_pos_df_rnk$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_santos_pos_mat_rnk[is.na(Kp_hmm_0.9_santos_pos_mat_rnk)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_santos_pos_mat_rnk <- Kp_hmm_0.9_santos_pos_mat_rnk[,Kp_operon_order]
+
+# Annotations
+
+colormap_santos_pos_0.9cov_rnk <- colorRamp2(seq(0, 13, length.out = 14), viridis(direction = -1, 14))
+
+genus_colors_santos_pos_0.9cov_rnk <- unique(Kp_hmm_0.9_santos_pos_df_rnk$Color)
+
+# Plot
+
+Kp_hmm_0.9_santos_pos_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_santos_pos_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_santos_pos_0.9cov_rnk,
+          cluster_columns = F,
+          cluster_rows = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          heatmap_legend_param = list(at = seq(0, 14, 1)),
+          show_heatmap_legend = F,
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1))
+
+Kp_hmm_0.9_santos_pos_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_santos_pos_df_rnk$Genus, name = "Genus",
+          col = genus_colors_santos_pos_0.9cov_rnk,
+          show_column_names = F,
+          show_heatmap_legend = F,
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_santos_pos_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_santos_pos_df_rnk$N_ratio, name = "15N/14N",
+          col = inferno(direction = -1, 6),
+          show_column_names = F,
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_santos_pos_rnk_list <- Kp_hmm_0.9_santos_pos_rnk_chm_1 + Kp_hmm_0.9_santos_pos_rnk_chm_2 + Kp_hmm_0.9_santos_pos_rnk_chm_3
+
+Kp_hmm_0.9_santos_pos_rnk_chm <- 
+draw(Kp_hmm_0.9_santos_pos_rnk_list, heatmap_legend_side = "top")
+
+```
+
+### 85% cov: nonSantos (-) - Group B
+
+#### Data
+```{r}
+
+## grab isolates not in the 'Santos_pos' subset above
+Kp_hmm_0.9_nonSantos_df <- subset(Kp_hmm_0.9_df, !(BCW_ID %in% Kp_hmm_0.9_santos_pos_df$BCW_ID))
+
+Kp_hmm_0.9_nonSantos_df <- filter(Kp_hmm_0.9_nonSantos_df,
+                                    nifH == 0 &
+                                    nifD == 0 &
+                                    nifK == 0 &
+                                    nifE == 0 &
+                                    nifN == 0 &
+                                    nifB == 0
+                              )
+
+## create matrix from dataframe
+Kp_hmm_0.9_nonSantos_mat <- as.matrix(Kp_hmm_0.9_nonSantos_df[, grep("nif", colnames(Kp_hmm_0.9_nonSantos_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_nonSantos_mat) <- Kp_hmm_0.9_nonSantos_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_nonSantos_mat[is.na(Kp_hmm_0.9_nonSantos_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_nonSantos_mat <- Kp_hmm_0.9_nonSantos_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_nonSantos_mat)
+```
+
+#### Annotations
+
+```{r}
+
+colormap_nonSantos_0.9cov <- colorRamp2(seq(0, 5, length.out = 6), viridis(direction = 1, 6))
+
+genus_colors_nonSantos_0.9cov <- unique(Kp_hmm_0.9_nonSantos_df$Color)
+
+```
+
+#### Plot - Group B - Clustered (C2)
+
+```{r}
+Kp_hmm_0.9_nonSantos_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_nonSantos_mat,
+          name = "HMM Hits",
+          col = colormap_nonSantos_0.9cov,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 1),legend_direction = "horizontal",
+                                      legend_width = unit(10, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1))
+
+Kp_hmm_0.9_nonSantos_chm_2 <-
+  Heatmap(Kp_hmm_0.9_nonSantos_df$Genus, name = "Genus",
+          col = genus_colors_nonSantos_0.9cov,
+          show_column_names = F,
+          heatmap_legend_param = list(ncol = 5,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_nonSantos_chm_3 <-
+  Heatmap(Kp_hmm_0.9_nonSantos_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.9_nonSantos_list <- Kp_hmm_0.9_nonSantos_chm_1 + Kp_hmm_0.9_nonSantos_chm_2
+
+Kp_hmm_0.9_nonSantos_chm <- 
+draw(Kp_hmm_0.9_nonSantos_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group B - 15N_Ranked (R2)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_nonSantos_df_rnk <- Kp_hmm_0.9_nonSantos_df[order(Kp_hmm_0.9_nonSantos_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_nonSantos_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_nonSantos_mat_rnk <- as.matrix(Kp_hmm_0.9_nonSantos_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_nonSantos_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_nonSantos_mat_rnk) <- Kp_hmm_0.9_nonSantos_df_rnk$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_nonSantos_mat_rnk <- Kp_hmm_0.9_nonSantos_mat_rnk[,Kp_operon_order]
+
+# Annotations
+
+colormap_nonSantos_0.9cov_rnk <- colorRamp2(seq(0, 5, length.out = 6), viridis(direction = 1, 6))
+
+genus_colors_nonSantos_0.9cov_rnk <- unique(Kp_hmm_0.9_nonSantos_df_rnk$Color)
+
+# Plot
+
+Kp_hmm_0.9_nonSantos_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_nonSantos_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_nonSantos_0.9cov_rnk,
+          cluster_columns = F,
+          cluster_rows = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          heatmap_legend_param = list(at = seq(0, 5, 1)),
+          show_heatmap_legend = F,
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1))
+
+Kp_hmm_0.9_nonSantos_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_nonSantos_df_rnk$Genus, name = "Genus",
+          col = genus_colors_nonSantos_0.9cov_rnk,
+          show_column_names = F,
+          show_heatmap_legend = F,
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_nonSantos_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_nonSantos_df_rnk$N_ratio, name = "15N/14N",
+          col = inferno(direction = -1, 5),
+          show_column_names = F,
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_nonSantos_rnk_list <- Kp_hmm_0.9_nonSantos_rnk_chm_1 + Kp_hmm_0.9_nonSantos_rnk_chm_2 + Kp_hmm_0.9_nonSantos_rnk_chm_3
+
+Kp_hmm_0.9_nonSantos_rnk_chm <- 
+draw(Kp_hmm_0.9_nonSantos_rnk_list, heatmap_legend_side = "top")
+
+```
+
+### 85% cov: hemiSantos (+/-) - Group C
+
+#### Data
+```{r}
+
+## grab isolates not in the 'Santos_pos' subset above
+Kp_hmm_0.9_hemiSantos_df <- subset(Kp_hmm_0.9_df, !(BCW_ID %in% Kp_hmm_0.9_nonSantos_df$BCW_ID) & !(BCW_ID %in% Kp_hmm_0.9_santos_pos_df$BCW_ID))
+
+## create matrix from dataframe
+Kp_hmm_0.9_hemiSantos_mat <- as.matrix(Kp_hmm_0.9_hemiSantos_df[, grep("nif", colnames(Kp_hmm_0.9_hemiSantos_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_hemiSantos_mat) <- Kp_hmm_0.9_hemiSantos_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_hemiSantos_mat[is.na(Kp_hmm_0.9_hemiSantos_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_hemiSantos_mat <- Kp_hmm_0.9_hemiSantos_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_hemiSantos_mat)
+```
+
+#### Annotations
+
+```{r}
+
+colormap_hemiSantos_0.9cov <- colorRamp2(seq(0, 7, length.out = 8), plasma(direction = 1, 8))
+
+genus_colors_hemiSantos_0.9cov <- unique(Kp_hmm_0.9_hemiSantos_df$Color)
+
+```
+
+#### Plot - Group C - Clustered (C3)
+
+```{r}
+Kp_hmm_0.9_hemiSantos_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_hemiSantos_mat,
+          name = "HMM Hits",
+          col = colormap_hemiSantos_0.9cov,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 7, 1),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(10, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 2))
+
+Kp_hmm_0.9_hemiSantos_chm_2 <-
+  Heatmap(Kp_hmm_0.9_hemiSantos_df$Genus, name = "Genus",
+          col = genus_colors_hemiSantos_0.9cov,
+          show_column_names = F,
+          heatmap_legend_param = list(ncol = 4,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hemiSantos_chm_3 <-
+  Heatmap(Kp_hmm_0.9_hemiSantos_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.9_hemiSantos_list <- Kp_hmm_0.9_hemiSantos_chm_1 + Kp_hmm_0.9_hemiSantos_chm_2
+
+Kp_hmm_0.9_hemiSantos_chm <- 
+draw(Kp_hmm_0.9_hemiSantos_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group C - 15N_Ranked (R3)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_hemiSantos_df_rnk <- Kp_hmm_0.9_hemiSantos_df[order(Kp_hmm_0.9_hemiSantos_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_hemiSantos_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_hemiSantos_mat_rnk <- as.matrix(Kp_hmm_0.9_hemiSantos_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_hemiSantos_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_hemiSantos_mat_rnk) <- Kp_hmm_0.9_hemiSantos_df_rnk$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_hemiSantos_mat_rnk <- Kp_hmm_0.9_hemiSantos_mat_rnk[,Kp_operon_order]
+
+# Annotations
+
+colormap_hemiSantos_0.9cov_rnk <- colorRamp2(seq(0, 7, length.out = 8), plasma(direction = 1, 8))
+
+genus_colors_hemiSantos_0.9cov_rnk <- unique(Kp_hmm_0.9_hemiSantos_df_rnk$Color)
+
+# Plot
+
+Kp_hmm_0.9_hemiSantos_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_hemiSantos_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_hemiSantos_0.9cov_rnk,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          cluster_rows = F,
+          top_annotation = Kp_operon_cha,
+          heatmap_legend_param = list(at = seq(0, 7, 1)),
+          show_heatmap_legend = F,
+          row_names_gp = gpar(fontsize = 2.0))
+
+Kp_hmm_0.9_hemiSantos_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_hemiSantos_df_rnk$Genus,
+          name = "Genus",
+          show_column_names = F,
+          show_heatmap_legend = F,
+          col = genus_colors_hemiSantos_0.9cov_rnk, 
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hemiSantos_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_hemiSantos_df_rnk$N_ratio,
+          name = "15N/14N",
+          show_column_names = F,
+          col = inferno(direction = -1, 6),
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hemiSantos_rnk_list <- Kp_hmm_0.9_hemiSantos_rnk_chm_1 + Kp_hmm_0.9_hemiSantos_rnk_chm_2 + Kp_hmm_0.9_hemiSantos_rnk_chm_3
+
+Kp_hmm_0.9_hemiSantos_rnk_chm <- 
+draw(Kp_hmm_0.9_hemiSantos_rnk_list, heatmap_legend_side = "top")
+
+```
+
+## Figure 2 - NO EUK & STRICT MONO
+### 85% cov: Santos (+) - Group A
+#### Data
+```{r}
+
+# Create Filtered Data Frame that satisfies the conditions of Santos minimum gene set:
+Kp_hmm_0.9_sp_mono_prok_df <- filter(Kp_hmm_0.9_df,
+                                    nifH >= 1 &
+                                    nifD >= 1 &
+                                    nifK >= 1 &
+                                    nifE >= 1 &
+                                    nifN >= 1 &
+                                    nifB >= 1
+                              )
+
+# filter again, removing eukaryotic isolates and co-cultures
+Kp_hmm_0.9_sp_mono_prok_df <- Kp_hmm_0.9_sp_mono_prok_df %>% 
+  filter(Genus != "Meyerozyma" & 
+           Genus != "Rhodotorula" &
+           n_bins == 1)
+
+## create matrix from dataframe
+Kp_hmm_0.9_sp_mono_prok_mat <- as.matrix(Kp_hmm_0.9_sp_mono_prok_df[, grep("nif", colnames(Kp_hmm_0.9_sp_mono_prok_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_sp_mono_prok_mat) <- Kp_hmm_0.9_sp_mono_prok_df$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_sp_mono_prok_mat <- Kp_hmm_0.9_sp_mono_prok_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_sp_mono_prok_mat)
+```
+
+#### Heatmap Colors
+```{r}
+colormap_sp_mono_prok <- colorRamp2(seq(0, 6, length.out = 7), viridis(direction = -1, 7))
+
+genus_colors_sp_mono_prok <- unique(Kp_hmm_0.9_sp_mono_prok_df$Color)
+
+```
+
+
+#### Plot - Group A - Clustered (C1)
+
+```{r}
+Kp_hmm_0.9_sp_mono_prok_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_sp_mono_prok_mat,
+          name = "HMM Hits",
+          col = colormap_sp_mono_prok,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 6, 1),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(10, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.2))
+
+Kp_hmm_0.9_sp_mono_prok_chm_2 <-
+  Heatmap(Kp_hmm_0.9_sp_mono_prok_df$Genus,
+          name = "Genus",
+          show_column_names = FALSE,
+          col = genus_colors_sp_mono_prok,
+          heatmap_legend_param = list(ncol = 4,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_sp_mono_prok_list <- Kp_hmm_0.9_sp_mono_prok_chm_1 + Kp_hmm_0.9_sp_mono_prok_chm_2
+
+
+Kp_hmm_0.9_sp_mono_prok_chm <- 
+draw(Kp_hmm_0.9_sp_mono_prok_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group A - 15N_Ranked (R1)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_sp_mono_prok_df_rnk <- Kp_hmm_0.9_sp_mono_prok_df[order(Kp_hmm_0.9_sp_mono_prok_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_sp_mono_prok_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_sp_mono_prok_mat_rnk <- as.matrix(Kp_hmm_0.9_sp_mono_prok_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_sp_mono_prok_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_sp_mono_prok_mat_rnk) <- Kp_hmm_0.9_sp_mono_prok_df_rnk$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_sp_mono_prok_mat_rnk[is.na(Kp_hmm_0.9_sp_mono_prok_mat_rnk)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_sp_mono_prok_mat_rnk <- Kp_hmm_0.9_sp_mono_prok_mat_rnk[,Kp_operon_order]
+
+# Annotations
+
+colormap_sp_mono_prok_rnk <- colorRamp2(seq(0, 6, length.out = 7), viridis(direction = -1, 7))
+
+# Plot
+
+Kp_hmm_0.9_sp_mono_prok_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_sp_mono_prok_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_sp_mono_prok_rnk,
+          cluster_columns = F,
+          cluster_rows = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          heatmap_legend_param = list(at = seq(0, 6, 1)),
+          show_heatmap_legend = F,
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.2))
+
+Kp_hmm_0.9_sp_mono_prok_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_sp_mono_prok_df_rnk$Genus, name = "Genus",
+          col = genus_colors_sp_mono_prok,
+          show_column_names = F,
+          show_heatmap_legend = F,
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_sp_mono_prok_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_sp_mono_prok_df_rnk$N_ratio, name = "15N/14N",
+          col = inferno(direction = -1, 6),
+          show_column_names = F,
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_sp_mono_prok_rnk_list <- Kp_hmm_0.9_sp_mono_prok_rnk_chm_1 + Kp_hmm_0.9_sp_mono_prok_rnk_chm_2 + Kp_hmm_0.9_sp_mono_prok_rnk_chm_3
+
+Kp_hmm_0.9_sp_mono_prok_rnk_chm <- 
+draw(Kp_hmm_0.9_sp_mono_prok_rnk_list, heatmap_legend_side = "top")
+
+```
+
+
+### 85% cov: nonSantos (-) - Group B
+
+#### Data
+```{r}
+
+## grab isolates not in the 'Santos_pos' subset above
+Kp_hmm_0.9_ns_mono_prok_df <- subset(Kp_hmm_0.9_df, !(BCW_ID %in% Kp_hmm_0.9_santos_pos_df$BCW_ID))
+
+Kp_hmm_0.9_ns_mono_prok_df <- filter(Kp_hmm_0.9_ns_mono_prok_df,
+                                    nifH == 0 &
+                                    nifD == 0 &
+                                    nifK == 0 &
+                                    nifE == 0 &
+                                    nifN == 0 &
+                                    nifB == 0
+                              )
+
+# filter again, removing eukaryotic isolates and co-cultures
+Kp_hmm_0.9_ns_mono_prok_df <- Kp_hmm_0.9_ns_mono_prok_df %>% 
+  filter(Genus != "Meyerozyma" & 
+           Genus != "Rhodotorula" &
+           n_bins == 1)
+
+
+## create matrix from dataframe
+Kp_hmm_0.9_ns_mono_prok_mat <- as.matrix(Kp_hmm_0.9_ns_mono_prok_df[, grep("nif", colnames(Kp_hmm_0.9_ns_mono_prok_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_ns_mono_prok_mat) <- Kp_hmm_0.9_ns_mono_prok_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_ns_mono_prok_mat[is.na(Kp_hmm_0.9_ns_mono_prok_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_ns_mono_prok_mat <- Kp_hmm_0.9_ns_mono_prok_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_ns_mono_prok_mat)
+```
+
+#### Heatmap Colors
+
+```{r}
+
+colormap_ns_mono_prok <- colorRamp2(seq(0, 4, length.out = 5), viridis(direction = 1, 5))
+
+genus_colors_ns_mono_prok <- unique(Kp_hmm_0.9_ns_mono_prok_df$Color)
+
+```
+
+#### Plot - Group B - Clustered (C2)
+
+```{r}
+Kp_hmm_0.9_ns_mono_prok_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_ns_mono_prok_mat,
+          name = "HMM Hits",
+          col = colormap_ns_mono_prok,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 4, 1),legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.2))
+
+Kp_hmm_0.9_ns_mono_prok_chm_2 <-
+  Heatmap(Kp_hmm_0.9_ns_mono_prok_df$Genus, name = "Genus",
+          col = genus_colors_ns_mono_prok,
+          show_column_names = F,
+          heatmap_legend_param = list(ncol = 5,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_ns_mono_prok_list <- Kp_hmm_0.9_ns_mono_prok_chm_1 + Kp_hmm_0.9_ns_mono_prok_chm_2
+
+Kp_hmm_0.9_ns_mono_prok_chm <- 
+draw(Kp_hmm_0.9_ns_mono_prok_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group B - 15N_Ranked (R2)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_ns_mono_prok_df_rnk <- Kp_hmm_0.9_ns_mono_prok_df[order(Kp_hmm_0.9_ns_mono_prok_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_ns_mono_prok_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_ns_mono_prok_mat_rnk <- as.matrix(Kp_hmm_0.9_ns_mono_prok_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_ns_mono_prok_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_ns_mono_prok_mat_rnk) <- Kp_hmm_0.9_ns_mono_prok_df_rnk$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_ns_mono_prok_mat_rnk <- Kp_hmm_0.9_ns_mono_prok_mat_rnk[,Kp_operon_order]
+
+# annotation color
+genus_colors_ns_mono_prok_rnk <- unique(Kp_hmm_0.9_ns_mono_prok_df_rnk$Color)
+
+# Plot
+
+Kp_hmm_0.9_ns_mono_prok_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_ns_mono_prok_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_ns_mono_prok,
+          cluster_columns = F,
+          cluster_rows = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          heatmap_legend_param = list(at = seq(0, 4, 1)),
+          show_heatmap_legend = F,
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 1.2))
+
+Kp_hmm_0.9_ns_mono_prok_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_ns_mono_prok_df_rnk$Genus, name = "Genus",
+          col = genus_colors_ns_mono_prok_rnk,
+          show_column_names = F,
+          show_heatmap_legend = F,
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_ns_mono_prok_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_ns_mono_prok_df_rnk$N_ratio, name = "15N/14N",
+          col = inferno(direction = -1, 5),
+          show_column_names = F,
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_ns_mono_prok_rnk_list <- Kp_hmm_0.9_ns_mono_prok_rnk_chm_1 + Kp_hmm_0.9_ns_mono_prok_rnk_chm_2 + Kp_hmm_0.9_ns_mono_prok_rnk_chm_3
+
+Kp_hmm_0.9_ns_mono_prok_rnk_chm <- 
+draw(Kp_hmm_0.9_ns_mono_prok_rnk_list, heatmap_legend_side = "top")
+
+```
+
+### 85% cov: hemiSantos (+/-) - Group C
+
+#### Data
+```{r}
+
+## grab isolates not in the 'Santos_pos' subset above
+Kp_hmm_0.9_hs_mono_prok_df <- subset(Kp_hmm_0.9_df, !(BCW_ID %in% Kp_hmm_0.9_nonSantos_df$BCW_ID) & !(BCW_ID %in% Kp_hmm_0.9_santos_pos_df$BCW_ID))
+
+# filter again, removing eukaryotic isolates and co-cultures
+Kp_hmm_0.9_hs_mono_prok_df <- Kp_hmm_0.9_hs_mono_prok_df %>% 
+  filter(Genus != "Meyerozyma" & 
+           Genus != "Rhodotorula" &
+           n_bins == 1)
+
+## create matrix from dataframe
+Kp_hmm_0.9_hs_mono_prok_mat <- as.matrix(Kp_hmm_0.9_hs_mono_prok_df[, grep("nif", colnames(Kp_hmm_0.9_hs_mono_prok_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_hs_mono_prok_mat) <- Kp_hmm_0.9_hs_mono_prok_df$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_hs_mono_prok_mat[is.na(Kp_hmm_0.9_hs_mono_prok_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_hs_mono_prok_mat <- Kp_hmm_0.9_hs_mono_prok_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_hs_mono_prok_mat)
+```
+
+#### Heatmap Colors
+
+```{r}
+
+colormap_hs_mono_prok <- colorRamp2(seq(0, 5, length.out = 6), plasma(direction = 1, 6))
+
+genus_colors_hs_mono_prok <- unique(Kp_hmm_0.9_hs_mono_prok_df$Color)
+
+```
+
+#### Plot - Group C - Clustered (C3)
+
+```{r}
+Kp_hmm_0.9_hs_mono_prok_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_hs_mono_prok_mat,
+          name = "HMM Hits",
+          col = colormap_hs_mono_prok,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          top_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 2))
+
+Kp_hmm_0.9_hs_mono_prok_chm_2 <-
+  Heatmap(Kp_hmm_0.9_hs_mono_prok_df$Genus, name = "Genus",
+          col = genus_colors_hs_mono_prok,
+          show_column_names = F,
+          heatmap_legend_param = list(ncol = 4,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "lefttop"),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hs_mono_prok_list <- Kp_hmm_0.9_hs_mono_prok_chm_1 + Kp_hmm_0.9_hs_mono_prok_chm_2
+
+Kp_hmm_0.9_hs_mono_prok_chm <- 
+draw(Kp_hmm_0.9_hs_mono_prok_list, heatmap_legend_side = "bottom")
+```
+
+#### Plot - Group C - 15N_Ranked (R3)
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+Kp_hmm_0.9_hs_mono_prok_df_rnk <- Kp_hmm_0.9_hs_mono_prok_df[order(Kp_hmm_0.9_hs_mono_prok_df$N_ratio,
+                                                       -rank(Kp_hmm_0.9_hs_mono_prok_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+Kp_hmm_0.9_hs_mono_prok_mat_rnk <- as.matrix(Kp_hmm_0.9_hs_mono_prok_df_rnk[, grep("nif", colnames(Kp_hmm_0.9_hs_mono_prok_df_rnk))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_hs_mono_prok_mat_rnk) <- Kp_hmm_0.9_hs_mono_prok_df_rnk$BCW_ID
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_hs_mono_prok_mat_rnk <- Kp_hmm_0.9_hs_mono_prok_mat_rnk[,Kp_operon_order]
+
+# Annotations
+
+genus_colors_hs_mono_prok_rnk <- unique(Kp_hmm_0.9_hs_mono_prok_df_rnk$Color)
+
+# Plot
+
+Kp_hmm_0.9_hs_mono_prok_rnk_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_hs_mono_prok_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_hs_mono_prok,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10),
+          column_names_side = "bottom",
+          cluster_rows = F,
+          top_annotation = Kp_operon_cha,
+          heatmap_legend_param = list(at = seq(0, 5, 1)),
+          show_heatmap_legend = F,
+          row_names_gp = gpar(fontsize = 2.0))
+
+Kp_hmm_0.9_hs_mono_prok_rnk_chm_2 <-
+  Heatmap(Kp_hmm_0.9_hs_mono_prok_df_rnk$Genus,
+          name = "Genus",
+          show_column_names = F,
+          show_heatmap_legend = F,
+          col = genus_colors_hs_mono_prok_rnk, 
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hs_mono_prok_rnk_chm_3 <-
+  Heatmap(Kp_hmm_0.9_hs_mono_prok_df_rnk$N_ratio,
+          name = "15N/14N",
+          show_column_names = F,
+          col = inferno(direction = -1, 6),
+          heatmap_legend_param = list(legend_direction = "horizontal",
+                                      title_position = "lefttop",
+                                      color_bar = "continuous",
+                                      legend_width = unit(5, "cm"),
+                                      labels_gp = gpar(fontsize = 10)),
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_hs_mono_prok_rnk_list <- Kp_hmm_0.9_hs_mono_prok_rnk_chm_1 + Kp_hmm_0.9_hs_mono_prok_rnk_chm_2 + Kp_hmm_0.9_hs_mono_prok_rnk_chm_3
+
+Kp_hmm_0.9_hs_mono_prok_rnk_chm <- 
+draw(Kp_hmm_0.9_hs_mono_prok_rnk_list, heatmap_legend_side = "top")
+
+```
+
+## Lactococcus
+
+#### Filter for Lactococcus
+```{r}
+# Filter 0.35 coverage
+
+Kp_hmm_0.3_lactococcus <- filter(Kp_hmm_0.3_df, 
+                                 Genus == "Lactococcus")
+# Filter 0.5 Coverage
+
+Kp_hmm_0.5_lactococcus <- filter(Kp_hmm_0.5_df, 
+                                 Genus == "Lactococcus")
+# Filter 0.85 Coverage
+
+Kp_hmm_0.9_lactococcus <- filter(Kp_hmm_0.9_df, 
+                                 Genus == "Lactococcus")
+```
+
+#### 35% Coverage
+##### Data
+```{r}
+## create matrix from dataframe
+Kp_hmm_0.3_lactococcus_mat <- as.matrix(Kp_hmm_0.3_lactococcus[, grep("nif", colnames(Kp_hmm_0.3_lactococcus))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.3_lactococcus_mat) <- Kp_hmm_0.3_lactococcus$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.3_lactococcus_mat[is.na(Kp_hmm_0.3_lactococcus_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.3_lactococcus_mat <- Kp_hmm_0.3_lactococcus_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.3_lactococcus_mat)
+```
+
+##### Annotations
+```{r}
+
+colormap_Kp_hmm_0.3_lactococcus <- colorRamp2(seq(0, 5, length.out = 6), inferno(direction = -1, 6))
+
+genus_colors_Kp_hmm_0.3_lactococcus <- distinctColorPalette(length(unique(Kp_hmm_0.3_lactococcus$Genus)))
+
+```
+
+##### Plot
+
+```{r}
+Kp_hmm_0.3_lactococcus_chm_1 <- 
+  Heatmap(Kp_hmm_0.3_lactococcus_mat,
+          name = "HMM Hits",
+          col = colormap_Kp_hmm_0.3_lactococcus,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 5, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 7))
+
+Kp_hmm_0.3_lactococcus_chm_2 <-
+  Heatmap(Kp_hmm_0.3_lactococcus$Genus, name = "Genus", col = genus_colors_Kp_hmm_0.3_lactococcus, 
+          width = unit(5, "mm"))
+
+Kp_hmm_0.3_lactococcus_chm_3 <-
+  Heatmap(Kp_hmm_0.3_lactococcus$N_ratio, name = "15N/14N", col = viridis(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.3_lactococcus_list <- Kp_hmm_0.3_lactococcus_chm_1 + Kp_hmm_0.3_lactococcus_chm_2 + Kp_hmm_0.3_lactococcus_chm_3
+
+#draw(Kp_hmm_0.3_lactococcus_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+#### 50% Coverage
+##### Data
+```{r}
+## create matrix from dataframe
+Kp_hmm_0.5_lactococcus_mat <- as.matrix(Kp_hmm_0.5_lactococcus[, grep("nif", colnames(Kp_hmm_0.5_lactococcus))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.5_lactococcus_mat) <- Kp_hmm_0.5_lactococcus$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.5_lactococcus_mat[is.na(Kp_hmm_0.5_lactococcus_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.5_lactococcus_mat <- Kp_hmm_0.5_lactococcus_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.5_lactococcus_mat)
+```
+
+##### Annotations
+```{r}
+
+colormap_Kp_hmm_0.5_lactococcus <- colorRamp2(seq(0, 4, length.out = 5), inferno(direction = -1, 5))
+
+genus_colors_Kp_hmm_0.5_lactococcus <- distinctColorPalette(length(unique(Kp_hmm_0.5_lactococcus$Genus)))
+
+```
+
+##### Plot
+
+```{r}
+Kp_hmm_0.5_lactococcus_chm_1 <- 
+  Heatmap(Kp_hmm_0.5_lactococcus_mat,
+          name = "HMM Hits",
+          col = colormap_Kp_hmm_0.5_lactococcus,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 5, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 7))
+
+Kp_hmm_0.5_lactococcus_chm_2 <-
+  Heatmap(Kp_hmm_0.5_lactococcus$Genus, name = "Genus", col = genus_colors_Kp_hmm_0.5_lactococcus, 
+          width = unit(5, "mm"))
+
+Kp_hmm_0.5_lactococcus_chm_3 <-
+  Heatmap(Kp_hmm_0.5_lactococcus$N_ratio, name = "15N/14N", col = viridis(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.5_lactococcus_list <- Kp_hmm_0.5_lactococcus_chm_1 + Kp_hmm_0.5_lactococcus_chm_2 + Kp_hmm_0.5_lactococcus_chm_3
+
+#draw(Kp_hmm_0.5_lactococcus_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+#### 90% Coverage
+##### Data
+```{r}
+## create matrix from dataframe
+Kp_hmm_0.9_lactococcus_mat <- as.matrix(Kp_hmm_0.9_lactococcus[, grep("nif", colnames(Kp_hmm_0.9_lactococcus))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_hmm_0.9_lactococcus_mat) <- Kp_hmm_0.9_lactococcus$BCW_ID
+
+## replace NA with zero values in order to cluster
+Kp_hmm_0.9_lactococcus_mat[is.na(Kp_hmm_0.9_lactococcus_mat)] <- 0
+
+## Order columns, grouped by operons
+Kp_hmm_0.9_lactococcus_mat <- Kp_hmm_0.9_lactococcus_mat[,Kp_operon_order]
+
+max(Kp_hmm_0.9_lactococcus_mat)
+```
+
+##### Annotations
+```{r}
+
+colormap_Kp_hmm_0.9_lactococcus <- colorRamp2(seq(0, 5, length.out = 5), inferno(direction = -1, 5))
+
+genus_colors_Kp_hmm_0.9_lactococcus <- distinctColorPalette(length(unique(Kp_hmm_0.9_lactococcus$Genus)))
+
+```
+
+##### Plot
+
+```{r}
+Kp_hmm_0.9_lactococcus_chm_1 <- 
+  Heatmap(Kp_hmm_0.9_lactococcus_mat,
+          name = "HMM Hits",
+          col = colormap_Kp_hmm_0.9_lactococcus,
+          cluster_columns = F,
+          heatmap_legend_param = list(at = seq(0, 3, 1)),
+          top_annotation = Kp_Function_cha,
+          bottom_annotation = Kp_operon_cha,
+          row_names_gp = gpar(fontsize = 7))
+
+Kp_hmm_0.9_lactococcus_chm_2 <-
+  Heatmap(Kp_hmm_0.9_lactococcus$Genus, name = "Genus", col = genus_colors_Kp_hmm_0.9_lactococcus, 
+          width = unit(5, "mm"))
+
+Kp_hmm_0.9_lactococcus_chm_3 <-
+  Heatmap(Kp_hmm_0.9_lactococcus$N_ratio, name = "15N/14N", col = viridis(direction = -1, 6), width = unit(5, "mm"))
+
+Kp_hmm_0.9_lactococcus_list <- Kp_hmm_0.9_lactococcus_chm_1 + Kp_hmm_0.9_lactococcus_chm_2 + Kp_hmm_0.9_lactococcus_chm_3
+
+#draw(Kp_hmm_0.9_lactococcus_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+> all isolates here are identical, cannot cluster because there is zero distance between them all.
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### HMMSCAN with NIF **Pfams**
+
+##### DATA Import
+```{r, message=FALSE}
+
+# Read in lactococcus isolate ID list
+lactococcus_isolate_list <- read.table("./lactococcus_input.txt")
+
+# Read in the hmmscan search output files for NIF Pfam hits to records in each isolate's protein faa file
+Lacto_nif_pfam_list <- list.files(path = "NIFscan_v2_output/Lactococcus_NIF_Pfam/", pattern = 'NIF', recursive = T, full.names = T)
+Lacto_nif_pfam_list
+
+# Create a list of Kleb_pneu nifscan search output tables
+Lacto_nif_pfam_tbl_list <- lapply(Lacto_nif_pfam_list, read_tsv)
+
+# Add a column to every table that indicates the isolate genome for each NIF-TIGRFAM hmmscan hit
+Lacto_nif_pfam_tbl_list <- mapply(cbind, Lacto_nif_pfam_tbl_list, "isolate"=lactococcus_isolate_list$V1, SIMPLIFY=F)
+
+# Create One Dataframe for NIF-TIGRFAM matches of all isolates
+Lacto_nif_pfam_df <- do.call("rbind", Lacto_nif_pfam_tbl_list)
+
+# match ABB isolate ID on Lacto_nif_pfam_df to BCW_ID on abb_genome_bcw_labels
+Lacto_nif_pfam_df$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(Lacto_nif_pfam_df$isolate, abb_genome_bcw_labels$ABB_ID)]
+
+```
+
+
+# All BCW Genomes - Dos Santos/Alt Nif search (611 Genomes) 2014 / 2015
+
+> Nif HDK ENB and AltNif Gene Analysis for all genomes
+
+## Read in the hmmscan matches
+
+> There is an error in one of the headers of the files that is causing rbind to fail. Will manually rename the columns to see if fix. 
+
+**NOTE: IT FIXED IT!**
+
+```{r, message=FALSE}
+
+# Create a list of isolate genome IDs
+all_isolate_list <- read.table("./all_isolate_input.txt")
+
+# Read in the hmmscan Search output files for nif genes in each isolate's annotated faa list
+all_nifscan_list <- list.files(path = "NIFscan_v2_output/TIGRFAM_39_nif", pattern = 'nif_core_hmm.dm.ps', recursive = T, full.names = T)
+#all_nifscan_list
+
+# Create a list of Kleb_pneu nifscan search output tables
+all_nifscan_tbl_list <- lapply(all_nifscan_list, read.delim)
+
+# set colnames
+all_nifscan_colnames <- c("Family",
+                          "HMM_Length",
+                          "Query_ID",
+                          "Query_Length",
+                          "E-value",
+                          "HMM_Start",
+                          "HMM_End",
+                          "Query_Start",
+                          "Query_End",
+                          "Coverage")
+
+all_nifscan_tbl_list <- lapply(all_nifscan_tbl_list, setNames, all_nifscan_colnames)
+
+# Add a column to every table that indicates the isolate genome for each NIF-TIGRFAM hmmscan hit
+all_nifscan_tbl_list <- mapply(cbind, all_nifscan_tbl_list, "isolate"=all_isolate_list$V1, SIMPLIFY=F)
+
+# Create One Dataframe for NIF-TIGRFAM matches of all isolates
+all_nifscan_df <- do.call('rbind', all_nifscan_tbl_list)
+
+# Add a column to each record that adds annotation information for each TIGRFAM
+## match TIGRFAM annotation from tigr_def_list to nifscan family name
+all_nifscan_df$annotations <- tigr_def_list$Annotation[match(all_nifscan_df$Family, tigr_def_list$TIGRFAM)]
+
+## match ABB isolate ID on all_nifscan_df to BCW_ID on abb_genome_bcw_labels
+all_nifscan_df$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_nifscan_df$isolate, abb_genome_bcw_labels$ABB_ID)]
+
+# check to confirm 611 unique isolates
+nlevels(all_nifscan_df$BCW_ID)
+
+```
+
+## 35% Coverage
+
+
+```{r}
+all_nifscan_0.3cov <- psHMM_0.3_filter(all_nifscan_df)
+# Filtering with coverage >= 0.3 and E-val =< 1e-06 removes 9732 records.
+#79060-69328
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.3cov_grp <- all_nifscan_0.3cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+all_nifscan_0.3cov_grp
+nlevels(all_nifscan_0.3cov$BCW_ID) %>% unique()
+
+# Identify which records have multiple hits returned
+
+all_nifscan_0.3cov_replicates <- all_nifscan_0.3cov_grp %>% 
+  filter(count != 1)
+
+all_nifscan_0.3cov_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.3cov_dup <- all_nifscan_0.3cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+nlevels(all_nifscan_0.3cov_dup$BCW_ID)
+
+#?top_n - this function selects one based on value of a variable
+
+all_nifscan_0.3cov_dedup <- all_nifscan_0.3cov_dup %>% top_n(1, Coverage) # it works :)
+# 66409 records surviving of 69238 
+
+nlevels(all_nifscan_0.3cov_dedup$BCW_ID)
+
+```
+
+#### Generate Counts and Dataframe
+
+> for all 39 TIGRFAM hmms scanned against all 611 isolate genomes
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+all_nifscan_0.3cov_count <- all_nifscan_0.3cov_dedup %>% group_by(annotations, BCW_ID) %>% count()
+nlevels(all_nifscan_0.3cov_count$BCW_ID) %>% unique() # check to make sure no isolate drops
+
+# convert annotation calls to factor type
+all_nifscan_0.3cov_count$annotations <- as.factor(all_nifscan_0.3cov_count$annotations)
+
+# convert dataframe from narrow to wide format
+all_nifscan_0.3cov_df <- spread(all_nifscan_0.3cov_count, BCW_ID, n, drop = F)
+
+# transpose
+all_nifscan_0.3cov_df <- t(all_nifscan_0.3cov_df)
+
+# colnames
+colnames(all_nifscan_0.3cov_df) <- all_nifscan_0.3cov_df[1,]
+
+# remove annotation row
+all_nifscan_0.3cov_df <- all_nifscan_0.3cov_df[-1,]
+
+# revert to data frame
+all_nifscan_0.3cov_df <- as.data.frame(all_nifscan_0.3cov_df)
+```
+
+
+### Subset for Alt.Nif + Santos
+```{r}
+
+## subset
+
+alt_nif_santos_0.3cov_df <- all_nifscan_0.3cov_df %>% select("nifE",
+                                                             "nifN",
+                                                             "vnfK_nitrog",
+                                                             "anfK_nitrog",
+                                                             "nifK",
+                                                             "ANFD",
+                                                             "alt_nitrog_alpha_chain",
+                                                             "VNFD",
+                                                             "N2-ase-Ialpha",
+                                                             "nifD",
+                                                             "anfG_nitrog",
+                                                             "anfO_nitrog",
+                                                             "nifB",
+                                                             "nifH")
+
+## create matrix from dataframe
+alt_nif_santos_0.3cov_mat <- as.matrix(alt_nif_santos_0.3cov_df)
+
+# as.numeric
+class(alt_nif_santos_0.3cov_mat) <- "numeric"
+
+## replace NA with zero values in order to cluster
+alt_nif_santos_0.3cov_mat[is.na(alt_nif_santos_0.3cov_mat)] <- 0
+
+## assess structure of matrix
+str(alt_nif_santos_0.3cov_mat)
+
+# customize the order of hmms for the matrix
+alt_nif_santos_order <- c("nifH",
+                     "nifD",
+                     "nifK",
+                     "nifE",
+                     "nifN",
+                     "nifB",
+                     "anfK_nitrog",
+                     "ANFD",
+                     "anfO_nitrog",
+                     "anfG_nitrog",
+                     "vnfK_nitrog",
+                     "VNFD",
+                     "N2-ase-Ialpha",
+                     "alt_nitrog_alpha_chain")
+
+# Re-order the columns
+alt_nif_santos_0.3cov_mat <- alt_nif_santos_0.3cov_mat[,alt_nif_santos_order]
+
+## add column to df with 15N/14N ratio data
+alt_nif_santos_0.3cov_df$N_ratio <- N15_ratios$ratio[match(rownames(alt_nif_santos_0.3cov_df), N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+alt_nif_santos_0.3cov_df$Genus <- all_genome_k31_lca$genus[match(rownames(alt_nif_santos_0.3cov_df), all_genome_k31_lca$BCW_ID)]
+alt_nif_santos_0.3cov_df$Genus <- sub("^$", "unassigned", alt_nif_santos_0.3cov_df$Genus) # fill empty values as 'unassigned'
+max(alt_nif_santos_0.3cov_mat)
+
+## add column to df with BCW_ID information for each isolate
+alt_nif_santos_0.3cov_df$BCW_ID <- rownames(alt_nif_santos_0.3cov_df)
+```
+
+### Plot
+
+```{r}
+# 35% Coverage plot
+
+## assign colors
+
+alt_nif_santos_0.3cov_colormap <- colorRamp2(seq(0, 11, length.out = 12), inferno(direction = -1, 12))
+
+alt_nif_santos_genus_colors_0.3 <- distinctColorPalette(length(unique(alt_nif_santos_0.3cov_df$Genus)))
+
+# make heatmaps
+alt_nif_santos_0.3cov_chm_1 <- 
+Heatmap(alt_nif_santos_0.3cov_mat,
+        name = "HMM Hits",
+        col = alt_nif_santos_0.3cov_colormap,
+        cluster_columns = F,
+        heatmap_legend_param = list(at = seq(0, 11, 1)),
+        row_names_gp = gpar(fontsize = 1.0))
+
+alt_nif_santos_0.3cov_chm_2 <-
+  Heatmap(alt_nif_santos_0.3cov_df$Genus, name = "Genus", col = alt_nif_santos_genus_colors_0.3, 
+          width = unit(5, "mm"))
+
+alt_nif_santos_0.3cov_chm_3 <-
+  Heatmap(alt_nif_santos_0.3cov_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+alt_nif_santos_0.3_list <- alt_nif_santos_0.3cov_chm_1 + alt_nif_santos_0.3cov_chm_2 + alt_nif_santos_0.3cov_chm_3
+
+#draw(alt_nif_santos_0.3_list, heatmap_legend_side = "right")
+```
+
+
+
+## 50% TIGRFAM HMM Coverage
+
+
+```{r}
+all_nifscan_0.5cov <- psHMM_0.5_filter(all_nifscan_df)
+# Filtering with coverage >= 0.5 and E-val =< 1e-06 removes 9732 records.
+#79060-69328
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.5cov_grp <- all_nifscan_0.5cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+all_nifscan_0.5cov_grp
+nlevels(all_nifscan_0.5cov$BCW_ID) %>% unique()
+
+# Identify which records have multiple hits returned
+
+all_nifscan_0.5cov_replicates <- all_nifscan_0.5cov_grp %>% 
+  filter(count != 1)
+
+all_nifscan_0.5cov_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.5cov_dup <- all_nifscan_0.5cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+nlevels(all_nifscan_0.5cov_dup$BCW_ID)
+
+#?top_n - this function selects one based on value of a variable
+
+all_nifscan_0.5cov_dedup <- all_nifscan_0.5cov_dup %>% top_n(1, Coverage) # it works :)
+# 66409 records surviving of 69238 
+
+nlevels(all_nifscan_0.5cov_dedup$BCW_ID)
+
+```
+
+#### Generate Counts and Dataframe
+
+> for all 39 TIGRFAM hmms scanned against all 611 isolate genomes
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+all_nifscan_0.5cov_count <- all_nifscan_0.5cov_dedup %>% group_by(annotations, BCW_ID) %>% count()
+nlevels(all_nifscan_0.5cov_count$BCW_ID) %>% unique() # check to make sure no isolate drops
+
+# convert annotation calls to factor type
+all_nifscan_0.5cov_count$annotations <- as.factor(all_nifscan_0.5cov_count$annotations)
+
+# convert dataframe from narrow to wide format
+all_nifscan_0.5cov_df <- spread(all_nifscan_0.5cov_count, BCW_ID, n, drop = F)
+
+# transpose
+all_nifscan_0.5cov_df <- t(all_nifscan_0.5cov_df)
+
+# colnames
+colnames(all_nifscan_0.5cov_df) <- all_nifscan_0.5cov_df[1,]
+
+# remove annotation row
+all_nifscan_0.5cov_df <- all_nifscan_0.5cov_df[-1,]
+
+# revert to data frame
+all_nifscan_0.5cov_df <- as.data.frame(all_nifscan_0.5cov_df)
+```
+
+
+### Subset for Alt.Nif + Santos
+```{r}
+
+## subset
+
+alt_nif_santos_0.5cov_df <- all_nifscan_0.5cov_df %>% select("nifE",
+                                                             "nifN",
+                                                             "vnfK_nitrog",
+                                                             "anfK_nitrog",
+                                                             "nifK",
+                                                             "ANFD",
+                                                             "alt_nitrog_alpha_chain",
+                                                             "VNFD",
+                                                             "N2-ase-Ialpha",
+                                                             "nifD",
+                                                             "anfG_nitrog",
+                                                             "anfO_nitrog",
+                                                             "nifB",
+                                                             "nifH")
+
+## create matrix from dataframe
+alt_nif_santos_0.5cov_mat <- as.matrix(alt_nif_santos_0.5cov_df)
+
+# as.numeric
+class(alt_nif_santos_0.5cov_mat) <- "numeric"
+
+## replace NA with zero values in order to cluster
+alt_nif_santos_0.5cov_mat[is.na(alt_nif_santos_0.5cov_mat)] <- 0
+
+## assess structure of matrix
+str(alt_nif_santos_0.5cov_mat)
+
+# customize the order of hmms for the matrix
+alt_nif_santos_order <- c("nifH",
+                     "nifD",
+                     "nifK",
+                     "nifE",
+                     "nifN",
+                     "nifB",
+                     "anfK_nitrog",
+                     "ANFD",
+                     "anfO_nitrog",
+                     "anfG_nitrog",
+                     "vnfK_nitrog",
+                     "VNFD",
+                     "N2-ase-Ialpha",
+                     "alt_nitrog_alpha_chain")
+
+# Re-order the columns
+alt_nif_santos_0.5cov_mat <- alt_nif_santos_0.5cov_mat[,alt_nif_santos_order]
+
+## add column to df with 15N/14N ratio data
+alt_nif_santos_0.5cov_df$N_ratio <- N15_ratios$ratio[match(rownames(alt_nif_santos_0.5cov_df), N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+alt_nif_santos_0.5cov_df$Genus <- all_genome_k31_lca$genus[match(rownames(alt_nif_santos_0.5cov_df), all_genome_k31_lca$BCW_ID)]
+alt_nif_santos_0.5cov_df$Genus <- sub("^$", "unassigned", alt_nif_santos_0.5cov_df$Genus) # fill empty values as 'unassigned'
+max(alt_nif_santos_0.5cov_mat)
+
+## add column to df with BCW_ID information for each isolate
+alt_nif_santos_0.5cov_df$BCW_ID <- rownames(alt_nif_santos_0.5cov_df)
+```
+
+### Plot
+
+```{r}
+# 50% Coverage plot
+
+## assign colors
+
+alt_nif_santos_0.5cov_colormap <- colorRamp2(seq(0, 11, length.out = 12), inferno(direction = -1, 12))
+
+alt_nif_santos_genus_colors_0.5 <- distinctColorPalette(length(unique(alt_nif_santos_0.5cov_df$Genus)))
+
+# make heatmaps
+alt_nif_santos_0.5cov_chm_1 <- 
+Heatmap(alt_nif_santos_0.5cov_mat,
+        name = "HMM Hits",
+        col = alt_nif_santos_0.5cov_colormap,
+        cluster_columns = F,
+        heatmap_legend_param = list(at = seq(0, 11, 1)),
+        row_names_gp = gpar(fontsize = 1.0))
+
+alt_nif_santos_0.5cov_chm_2 <-
+  Heatmap(alt_nif_santos_0.5cov_df$Genus, name = "Genus", col = alt_nif_santos_genus_colors_0.5, 
+          width = unit(5, "mm"))
+
+alt_nif_santos_0.5cov_chm_3 <-
+  Heatmap(alt_nif_santos_0.5cov_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+alt_nif_santos_0.5_list <- alt_nif_santos_0.5cov_chm_1 + alt_nif_santos_0.5cov_chm_2 + alt_nif_santos_0.5cov_chm_3
+
+#draw(alt_nif_santos_0.5_list, heatmap_legend_side = "right")
+```
+
+
+## 85% Coverage
+
+
+```{r}
+all_nifscan_0.9cov <- psHMM_0.9_filter(all_nifscan_df)
+# Filtering with coverage >= 0.9 and E-val =< 1e-06 removes 9732 records.
+#79060-69328
+```
+
+#### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.9cov_grp <- all_nifscan_0.9cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  summarise(count=n())
+
+all_nifscan_0.9cov_grp
+nlevels(all_nifscan_0.9cov$BCW_ID) %>% unique()
+
+# Identify which records have multiple hits returned
+
+all_nifscan_0.9cov_replicates <- all_nifscan_0.9cov_grp %>% 
+  filter(count != 1)
+
+all_nifscan_0.9cov_replicates
+
+```
+
+#### De-duplicate the filtered data frame
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+all_nifscan_0.9cov_dup <- all_nifscan_0.9cov %>% 
+  group_by(Family, BCW_ID, Query_ID) %>% 
+  mutate(count = (n()))
+nlevels(all_nifscan_0.9cov_dup$BCW_ID)
+
+#?top_n - this function selects one based on value of a variable
+
+all_nifscan_0.9cov_dedup <- all_nifscan_0.9cov_dup %>% top_n(1, Coverage) # it works :)
+# 66409 records surviving of 69238 
+
+nlevels(all_nifscan_0.9cov_dedup$BCW_ID)
+
+```
+
+#### Generate Counts and Dataframe
+
+> for all 39 TIGRFAM hmms scanned against all 611 isolate genomes
+
+```{r}
+
+# Create a data frame with new variable of counts for each annotation call
+all_nifscan_0.9cov_count <- all_nifscan_0.9cov_dedup %>% group_by(annotations, BCW_ID) %>% count()
+nlevels(all_nifscan_0.9cov_count$BCW_ID) %>% unique() # check to make sure no isolate drops
+
+# convert annotation calls to factor type
+all_nifscan_0.9cov_count$annotations <- as.factor(all_nifscan_0.9cov_count$annotations)
+
+# convert dataframe from narrow to wide format
+all_nifscan_0.9cov_df <- spread(all_nifscan_0.9cov_count, BCW_ID, n, drop = F)
+
+# transpose
+all_nifscan_0.9cov_df <- t(all_nifscan_0.9cov_df)
+
+# colnames
+colnames(all_nifscan_0.9cov_df) <- all_nifscan_0.9cov_df[1,]
+
+# remove annotation row
+all_nifscan_0.9cov_df <- all_nifscan_0.9cov_df[-1,]
+
+# revert to data frame
+all_nifscan_0.9cov_df <- as.data.frame(all_nifscan_0.9cov_df)
+```
+
+
+### Subset for Alt.Nif Genes
+```{r}
+
+## subset all_nifscan df to select only alt nif gene models
+alt_nif_0.9cov_df <- all_nifscan_0.9cov_df %>% select("vnfK_nitrog",
+                                                             "anfK_nitrog",
+                                                             "ANFD",
+                                                             "alt_nitrog_alpha_chain",
+                                                             "VNFD",
+                                                             "N2-ase-Ialpha",
+                                                             "anfG_nitrog",
+                                                             "anfO_nitrog"
+                                                             )
+
+## add column to df with 15N/14N ratio data
+alt_nif_0.9cov_df$N_ratio <- N15_ratios$ratio[match(rownames(alt_nif_0.9cov_df), N15_ratios$BCW_ID)]
+
+## add column to df with genus information for each isolate
+alt_nif_0.9cov_df$Genus <- all_genome_k31_lca$genus[match(rownames(alt_nif_0.9cov_df), all_genome_k31_lca$BCW_ID)]
+alt_nif_0.9cov_df$Genus <- sub("^$", "unassigned", alt_nif_0.9cov_df$Genus) # fill empty values as 'unassigned'
+
+## add column to df with BCW_ID information for each isolate
+alt_nif_0.9cov_df$BCW_ID <- rownames(alt_nif_0.9cov_df)
+```
+
+
+#### Santos positive isolates
+```{r}
+# Subset again to select only isolates that have nifHDKENB (Santos gene set)
+alt_nif_santos_0.9cov_df <- subset(alt_nif_0.9cov_df, (BCW_ID %in% Kp_hmm_0.9_santos_pos_df$BCW_ID))
+
+## create matrix from dataframe
+alt_nif_santos_0.9cov_mat <- as.matrix(alt_nif_santos_0.9cov_df[, c(1:8)])
+                                
+## replace NA with zero values in order to cluster
+alt_nif_santos_0.9cov_mat[is.na(alt_nif_santos_0.9cov_mat)] <- 0
+
+# as.numeric
+class(alt_nif_santos_0.9cov_mat) <- "numeric"
+
+## assess structure of matrix
+str(alt_nif_santos_0.9cov_mat)
+max(alt_nif_santos_0.9cov_mat)
+# customize the order of hmms for the matrix
+alt_nif_order <- c("anfK_nitrog",
+                     "ANFD",
+                     "anfO_nitrog",
+                     "anfG_nitrog",
+                     "vnfK_nitrog",
+                     "VNFD",
+                     "N2-ase-Ialpha",
+                     "alt_nitrog_alpha_chain")
+
+# Re-order the columns
+alt_nif_santos_0.9cov_mat <- alt_nif_santos_0.9cov_mat[,alt_nif_order]
+
+```
+
+##### Plot Ranked by 15N / 14N Ratio
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+alt_nif_santos_0.9cov_df_rnk <- alt_nif_santos_0.9cov_df[order(alt_nif_santos_0.9cov_df$N_ratio,
+                                                       -rank(alt_nif_santos_0.9cov_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+alt_nif_santos_0.9cov_mat_rnk <- as.matrix(alt_nif_santos_0.9cov_df_rnk[, c(1:8)])
+
+## make rownames of matrix BCW isolate ID
+rownames(alt_nif_santos_0.9cov_mat_rnk) <- alt_nif_santos_0.9cov_df_rnk$BCW_ID
+
+## replace NA with zero values in order to cluster
+alt_nif_santos_0.9cov_mat_rnk[is.na(alt_nif_santos_0.9cov_mat_rnk)] <- 0
+
+class(alt_nif_santos_0.9cov_mat_rnk) <- "numeric"
+
+## Order columns
+alt_nif_santos_0.9cov_mat_rnk <- alt_nif_santos_0.9cov_mat_rnk[,alt_nif_order]
+
+# Annotations
+
+colormap_alt_nif_santos_0.9cov_rnk <- colorRamp2(seq(0, 7, length.out = 8), plasma(direction = -1, 8))
+
+genus_colors_alt_nif_santos_0.9cov_rnk <- distinctColorPalette(length(unique(alt_nif_santos_0.9cov_df_rnk$Genus)))
+
+# Plot
+
+alt_nif_santos_0.9cov_rnk_chm_1 <- 
+  Heatmap(alt_nif_santos_0.9cov_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_santos_pos_0.9cov_rnk,
+          cluster_columns = F,
+          cluster_rows = F,
+          heatmap_legend_param = list(at = seq(0, 14, 1)),
+          row_names_gp = gpar(fontsize = 2.5))
+
+alt_nif_santos_0.9cov_rnk_chm_2 <-
+  Heatmap(alt_nif_santos_0.9cov_df_rnk$Genus, name = "Genus", col = genus_colors_santos_pos_0.9cov, 
+          width = unit(5, "mm"))
+
+alt_nif_santos_0.9cov_rnk_chm_3 <-
+  Heatmap(alt_nif_santos_0.9cov_df_rnk$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+alt_nif_santos_0.9cov_rnk_list <- alt_nif_santos_0.9cov_rnk_chm_1 + alt_nif_santos_0.9cov_rnk_chm_2 + alt_nif_santos_0.9cov_rnk_chm_3
+
+#alt_nif_santos_0.9cov_rnk_chm <- 
+#draw(alt_nif_santos_0.9cov_rnk_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+
+```
+
+
+
+#### Non-Santos isolates
+```{r}
+# Subset again to select only isolates that have nifHDKENB (Santos gene set)
+alt_nif_nonSantos_0.9cov_df <- subset(alt_nif_0.9cov_df, (BCW_ID %in% Kp_hmm_0.9_nonSantos_df$BCW_ID))
+
+## create matrix from dataframe
+alt_nif_nonSantos_0.9cov_mat <- as.matrix(alt_nif_nonSantos_0.9cov_df[, c(1:8)])
+                                
+## replace NA with zero values in order to cluster
+alt_nif_nonSantos_0.9cov_mat[is.na(alt_nif_nonSantos_0.9cov_mat)] <- 0
+
+# as.numeric
+class(alt_nif_nonSantos_0.9cov_mat) <- "numeric"
+
+## assess structure of matrix
+str(alt_nif_nonSantos_0.9cov_mat)
+max(alt_nif_nonSantos_0.9cov_mat)
+# customize the order of hmms for the matrix
+alt_nif_order <- c("anfK_nitrog",
+                     "ANFD",
+                     "anfO_nitrog",
+                     "anfG_nitrog",
+                     "vnfK_nitrog",
+                     "VNFD",
+                     "N2-ase-Ialpha",
+                     "alt_nitrog_alpha_chain")
+
+# Re-order the columns
+alt_nif_nonSantos_0.9cov_mat <- alt_nif_nonSantos_0.9cov_mat[,alt_nif_order]
+
+```
+
+### Plot
+
+```{r}
+# 85% Coverage plot
+
+## assign colors
+
+alt_nif_santos_0.9cov_colormap <- colorRamp2(seq(0, 11, length.out = 12), inferno(direction = -1, 12))
+
+alt_nif_santos_genus_colors_0.9 <- distinctColorPalette(length(unique(alt_nif_santos_0.9cov_df$Genus)))
+
+# make heatmaps
+alt_nif_santos_0.9cov_chm_1 <- 
+Heatmap(alt_nif_santos_0.9cov_mat,
+        name = "HMM Hits",
+        col = alt_nif_santos_0.9cov_colormap,
+        cluster_columns = F,
+        heatmap_legend_param = list(at = seq(0, 11, 1)),
+        row_names_gp = gpar(fontsize = 1.0))
+
+alt_nif_santos_0.9cov_chm_2 <-
+  Heatmap(alt_nif_santos_0.9cov_df$Genus, name = "Genus", col = alt_nif_santos_genus_colors_0.9, 
+          width = unit(5, "mm"))
+
+alt_nif_santos_0.9cov_chm_3 <-
+  Heatmap(alt_nif_santos_0.9cov_df$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+alt_nif_santos_0.9_list <- alt_nif_santos_0.9cov_chm_1 + alt_nif_santos_0.9cov_chm_2 + alt_nif_santos_0.9cov_chm_3
+
+#draw(alt_nif_santos_0.9_list, heatmap_legend_side = "right")
+```
+
+
+## Fig 3 - MS1 - Alt. Nif Genes
+
+**Vanadium Type Alternative Nitrogenase includes**
+
+* vnfD
+* vnfK
+* vnfG
+
+### Subset for Alt.Nif Genes
+```{r}
+
+## subset all_nifscan df to select only alt nif gene models
+alt_nif_0.9_VennD <- all_nifscan_0.9cov_df %>% select("vnfK_nitrog",
+                                                      "vnfG_nitrog",
+                                                      "VNFD",
+                                                      "anfK_nitrog",
+                                                      "anfG_nitrog",
+                                                      "ANFD",
+                                                      "nifD",
+                                                      "nifK",
+                                                      "nifH")
+
+# convert all factor vectors to numeric vectors
+indx <- sapply(alt_nif_0.9_VennD, is.factor)
+alt_nif_0.9_VennD[indx] <- lapply(alt_nif_0.9_VennD[indx], function(x) as.numeric(as.factor(x)))
+
+# Add BCW_ID column
+alt_nif_0.9_VennD$BCW_ID <- rownames(alt_nif_0.9_VennD)
+
+## replace NA with zero values
+alt_nif_0.9_VennD[is.na(alt_nif_0.9_VennD)] <- 0
+
+# Generate Subsets based on Gene Model Sets (Vnf, Anf, Classic_Mo-Fe[nifD, nifK])
+alt_nif_0.9_VennD_vnf <- filter(alt_nif_0.9_VennD, vnfK_nitrog >= 1 &
+                                  vnfG_nitrog >= 1 &
+                                  VNFD >= 1)
+
+alt_nif_0.9_VennD_anf <- filter(alt_nif_0.9_VennD, anfK_nitrog >= 1 &
+                                  anfG_nitrog >= 1 &
+                                  ANFD >= 1)
+
+alt_nif_0.9_VennD_FeMo_dk <- filter(alt_nif_0.9_VennD, nifD >= 1 &
+                                      nifK >= 1)
+
+alt_nif_0.9_VennD_nifH <- filter(alt_nif_0.9_VennD, nifH >= 1)
+
+alt_nif_list <- list("Vn-Fe" = alt_nif_0.9_VennD_vnf$BCW_ID, "Fe-Fe" = alt_nif_0.9_VennD_anf$BCW_ID, "Mo-Fe" = alt_nif_0.9_VennD_FeMo_dk$BCW_ID, "nifH" = alt_nif_0.9_VennD_nifH$BCW_ID)
+
+```
+
+
+## Plot Venn Diagram
+```{r}
+
+library(devtools)
+library(Vennerable)
+
+str(alt_nif_list)
+
+V_alt_nif <- Venn(alt_nif_list)
+V_alt_nif
+
+
+anf_VD_plot <- plot(V_alt_nif, doWeights = FALSE)
+
+
+```
+
+```{r}
+# Make list of isolates with Alt Nif Genes
+alt_nif_isolates_df <- data.frame(isolates = V_alt_nif@IntersectionSets[["1111"]])
+
+# Write it to tsv file
+write_tsv(alt_nif_isolates_df, "./alt_nif_isolate_ids.txt", col_names = F)
+
+# generate isolate ID map file (between ABB number and BCW_IDs) for sourmash signatures
+
+all_isolate_id_map <- all_genome_k31_lca %>% select(ID, BCW_ID)
+all_isolate_id_map$ID <- as.character(all_isolate_id_map$ID)
+all_isolate_id_map$ID <- paste0(all_isolate_id_map$ID,".sig")
+all_isolate_id_map$BCW_ID <- as.character(all_isolate_id_map$BCW_ID)
+all_isolate_id_map$BCW_ID <- paste0(all_isolate_id_map$BCW_ID,".sig")
+write_csv(all_isolate_id_map, "./isolate_id_map.txt", col_names = F)
+
+```
+
+### Alt.Nif-MONO PROK
+```{r}
+
+## subset all_nifscan df to select only alt nif gene models
+alt_nif_mono_prok_VennD <- all_nifscan_0.9cov_df %>% 
+  select("vnfK_nitrog",
+         "vnfG_nitrog",
+         "VNFD",
+         "anfK_nitrog",
+         "anfG_nitrog",
+         "ANFD",
+         "nifD",
+         "nifK",
+         "nifH")
+
+# convert all factor vectors to numeric vectors
+indx <- sapply(alt_nif_mono_prok_VennD, is.factor)
+alt_nif_mono_prok_VennD[indx] <- lapply(alt_nif_mono_prok_VennD[indx], function(x) as.numeric(as.factor(x)))
+
+# Add BCW_ID column
+alt_nif_mono_prok_VennD$BCW_ID <- rownames(alt_nif_mono_prok_VennD)
+
+# Add bin count
+alt_nif_mono_prok_VennD$n_bins <- all_genome_bin_count$n_bins[match(alt_nif_mono_prok_VennD$BCW_ID, all_genome_bin_count$BCW_ID)]
+
+## replace NA with zero values
+alt_nif_mono_prok_VennD[is.na(alt_nif_mono_prok_VennD)] <- 0
+
+# Generate Subsets based on Gene Model Sets (Vnf, Anf, Classic_Mo-Fe[nifD, nifK])
+alt_nif_mono_prok_vnf <- filter(alt_nif_mono_prok_VennD, vnfK_nitrog >= 1 &
+                                  vnfG_nitrog >= 1 &
+                                  VNFD >= 1 &
+                                  n_bins ==1)
+
+alt_nif_mono_prok_anf <- filter(alt_nif_mono_prok_VennD, anfK_nitrog >= 1 &
+                                  anfG_nitrog >= 1 &
+                                  ANFD >= 1 &
+                                  n_bins ==1)
+
+alt_nif_mono_prok_FeMo_dk <- filter(alt_nif_mono_prok_VennD,
+                                    nifD >= 1 &
+                                    nifK >= 1 &
+                                    n_bins ==1)
+
+alt_nif_mono_prok_nifH <- filter(alt_nif_mono_prok_VennD,
+                                 nifH >= 1 &
+                                 n_bins ==1)
+
+alt_nif_mono_prok_list <- list("Vn-Fe" = alt_nif_mono_prok_vnf$BCW_ID, "Fe-Fe" = alt_nif_mono_prok_anf$BCW_ID, "Mo-Fe" = alt_nif_mono_prok_FeMo_dk$BCW_ID, "nifH" = alt_nif_mono_prok_nifH$BCW_ID)
+
+```
+
+
+## Plot Venn Diagram
+```{r}
+
+library(devtools)
+library(Vennerable)
+
+str(alt_nif_mono_prok_list)
+
+V_alt_nif_mono_prok <- Venn(alt_nif_mono_prok_list)
+V_alt_nif_mono_prok
+
+
+anf_VD_mono_prok_plot <- plot(V_alt_nif_mono_prok, doWeights = FALSE)
+
+```
+
+```{r}
+# Make list of mono prokaryotic isolates with Alt Nif Genes
+alt_nif_isolates_mono_prok_df <- data.frame(isolates = V_alt_nif_mono_prok@IntersectionSets[["1111"]])
+
+# Write it to tsv file
+write_tsv(alt_nif_isolates_mono_prok_df, "./alt_nif_isolate_mono_prok_ids.txt", col_names = F)
+
+# generate isolate ID map file (between ABB number and BCW_IDs) for sourmash signatures
+
+mono_prok_anf_isolate_id_map <- all_genome_k31_lca %>% select(ID, BCW_ID)
+
+mono_prok_anf_isolate_id_map$ID <- as.character(mono_prok_anf_isolate_id_map$ID)
+
+mono_prok_anf_isolate_id_map$ID <- paste0(mono_prok_anf_isolate_id_map$ID,".sig")
+
+mono_prok_anf_isolate_id_map$BCW_ID <- as.character(mono_prok_anf_isolate_id_map$BCW_ID)
+
+mono_prok_anf_isolate_id_map$BCW_ID <- paste0(mono_prok_anf_isolate_id_map$BCW_ID,".sig")
+
+write_csv(mono_prok_anf_isolate_id_map, "./isolate_id_map.txt", col_names = F)
+```
+
+##### Plot Ranked by 15N / 14N Ratio
+
+```{r}
+# Make a ranked list of the same isolates that lack the essential nitrogenase genes proposed by Santos
+alt_nif_santos_0.9cov_df_rnk <- alt_nif_santos_0.9cov_df[order(alt_nif_santos_0.9cov_df$N_ratio,
+                                                       -rank(alt_nif_santos_0.9cov_df$N_ratio), decreasing = T),]
+
+## create matrix from dataframe
+alt_nif_santos_0.9cov_mat_rnk <- as.matrix(alt_nif_santos_0.9cov_df_rnk[, c(1:8)])
+
+## make rownames of matrix BCW isolate ID
+rownames(alt_nif_santos_0.9cov_mat_rnk) <- alt_nif_santos_0.9cov_df_rnk$BCW_ID
+
+## replace NA with zero values in order to cluster
+alt_nif_santos_0.9cov_mat_rnk[is.na(alt_nif_santos_0.9cov_mat_rnk)] <- 0
+
+class(alt_nif_santos_0.9cov_mat_rnk) <- "numeric"
+
+## Order columns
+alt_nif_santos_0.9cov_mat_rnk <- alt_nif_santos_0.9cov_mat_rnk[,alt_nif_order]
+
+# Annotations
+
+colormap_alt_nif_santos_0.9cov_rnk <- colorRamp2(seq(0, 7, length.out = 8), plasma(direction = -1, 8))
+
+genus_colors_alt_nif_santos_0.9cov_rnk <- distinctColorPalette(length(unique(alt_nif_santos_0.9cov_df_rnk$Genus)))
+
+# Plot
+
+alt_nif_santos_0.9cov_rnk_chm_1 <- 
+  Heatmap(alt_nif_santos_0.9cov_mat_rnk,
+          name = "HMM Hits",
+          col = colormap_santos_pos_0.9cov_rnk,
+          cluster_columns = F,
+          cluster_rows = F,
+          heatmap_legend_param = list(at = seq(0, 14, 1)),
+          row_names_gp = gpar(fontsize = 2.5))
+
+alt_nif_santos_0.9cov_rnk_chm_2 <-
+  Heatmap(alt_nif_santos_0.9cov_df_rnk$Genus, name = "Genus", col = genus_colors_santos_pos_0.9cov, 
+          width = unit(5, "mm"))
+
+alt_nif_santos_0.9cov_rnk_chm_3 <-
+  Heatmap(alt_nif_santos_0.9cov_df_rnk$N_ratio, name = "15N/14N", col = inferno(direction = -1, 6), width = unit(5, "mm"))
+
+alt_nif_santos_0.9cov_rnk_list <- alt_nif_santos_0.9cov_rnk_chm_1 + alt_nif_santos_0.9cov_rnk_chm_2 + alt_nif_santos_0.9cov_rnk_chm_3
+
+#alt_nif_santos_0.9cov_rnk_chm <- 
+#draw(alt_nif_santos_0.9cov_rnk_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+
+```

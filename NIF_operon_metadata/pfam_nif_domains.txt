@@ -1,0 +1,16 @@
+PF00148    Oxidored_nitro
+PF03139    AnfG_VnfG
+PF00142    Fer4_NifH
+PF02579    Nitro_FeMo-Co
+PF16844    DIMCO_N
+PF11844    DUF3364
+PF17253    DUF5320
+PF00543    P-II
+PF04055    Radical_SAM
+PF06463    Mob_synth_C
+PF09582    AnfO_nitrog
+PF00037    Fer4
+PF12838    Fer4_7
+PF13394    Fer4_14
+PF07357    DRAT
+PF03747    ADP_ribosyl_GH

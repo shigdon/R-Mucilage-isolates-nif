@@ -1,0 +1,478 @@
+---
+title: "PGP_assays"
+author: "Shawn Higdon"
+date: "11/20/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# libraries
+```{r}
+library(dplyr)
+```
+
+
+## Read in the Data for PGP Biochemical assays
+
+```{r, message=FALSE}
+# Create a list of BCW isolates
+bcw_isolate_list <- read.table("bcw_isolate_list.txt")
+
+# Read in the hmmscan Search output files for nif genes in each isolate's annotated faa list
+pgp_data_list <- list.files(path = "./PGP_Data", pattern = 'PGP_*', recursive = T, full.names = T)
+pgp_data_list
+
+# Create a list of bcw nifscan search output tables
+pgp_data_tbl_list <- lapply(pgp_data_list, read_csv)
+
+# create object for each PGP Assay
+pgp_accd <- pgp_data_tbl_list[[1]]
+pgp_auxin <- pgp_data_tbl_list[[2]]
+pgp_po4 <- pgp_data_tbl_list[[3]]
+pgp_sidero <- pgp_data_tbl_list[[4]]
+
+```
+
+
+## Compute Assay metrics
+
+### ACC Deaminase Growth Assay
+
+> Isolates cultured on medium containing 1-amino-1-cyclopropane carboxylic acid as the only source of available nitrogen
+
+```{r}
+# ACCD Assay
+str(pgp_accd)
+## Compute average for Day 0 OD600 replicates
+pgp_accd$OD600_D0_avg <- rowMeans(pgp_accd[,3:5], na.rm = TRUE)
+## Compute average for Day 4 OD600 replicates
+pgp_accd$OD600_D4_avg <- rowMeans(pgp_accd[,6:8], na.rm = TRUE)
+
+## Compute Relative growth rate for each isolate
+pgp_accd$ACCD_RGR <- pgp_accd$OD600_D4_avg/pgp_accd$OD600_D0_avg
+
+## change number of significant digits for numeric values to 3
+pgp_accd %>% mutate_if(is.numeric, round, digits = 3)
+
+
+```
+
+### Auxin Biosynthesis Assay
+
+```{r}
+str(pgp_auxin)
+
+## Compute average for OD535 replicates
+pgp_auxin$OD535_avg <- rowMeans(pgp_auxin[,3:5], na.rm = TRUE)
+
+## Compute average for auxin concentration replicate values
+pgp_auxin$IAA_mg_ml_avg <- rowMeans(pgp_auxin[,6:8], na.rm = TRUE)
+
+## change number of significant digits for numeric values to 3
+pgp_auxin %>% mutate_if(is.numeric, round, digits = 3)
+```
+
+## Phosphate Solubilization Assay
+
+```{r}
+str(pgp_po4)
+
+## Compute average for OD535 replicates
+pgp_po4$OD535_avg <- rowMeans(pgp_po4[,3:5], na.rm = TRUE)
+
+## Compute average for auxin concentration replicate values
+pgp_po4$PO4_mg_L_avg <- rowMeans(pgp_po4[,6:8], na.rm = TRUE)
+
+## Multiply diluted concentrations by assay dilution factor of 100
+pgp_po4$PO4_mg_L_avg <- pgp_po4$PO4_mg_L_avg*100
+
+## change number of significant digits for numeric values to 3
+pgp_po4 %>% mutate_if(is.numeric, round, digits = 3)
+```
+
+## Siderophore Production Assay
+
+```{r}
+str(pgp_sidero)
+
+## Compute average for OD535 replicates
+pgp_sidero$OD630_avg <- rowMeans(pgp_sidero[,3:5], na.rm = TRUE)
+
+## Compute average for Siderophore units (%) using AR_AS replicate values
+## % Siderophore units = Absorbance of Sample (AS) - Absorbance of Reference (AR) / AR
+pgp_sidero$Sidero_units_avg <- rowMeans(pgp_sidero[,6:8], na.rm = TRUE)
+
+## change number of significant digits for numeric values to 3
+pgp_sidero %>% mutate_if(is.numeric, round, digits = 3)
+```
+
+## Read in 15N Assay data
+
+> Bring in 15N/14N ratios from 15N assimilation assay
+
+```{r}
+# Read in csv of 15N/14N ratio for each isolate
+N15_ratios <- read.csv("./../15N_assay_data_SH.csv", header = T)
+
+```
+
+## Combine PGP Assay Results
+
+> Make a data frame with results from:
+
+1. 15N Assay
+
+2. ACCD Growth Assay
+
+3. Auxin Biosynthesis Assay
+
+4. Phosphate Solubilization Assay
+
+5. Siderophore Production Assay
+
+### Make the Data Frame
+```{r}
+# Read in asm_no_euk_stats
+asm_no_euk_stats <- read.csv("./asm_stats_no_euk.csv", header = T)
+
+# start with 15N Assay ratios
+pgp_master <- tibble(
+  BCW_ID=asm_no_euk_stats$Isolate)
+
+# add N15 ratio values for each isolate
+pgp_master$`BNF` <- N15_ratios$ratio[match(pgp_master$BCW_ID, N15_ratios$BCW_ID)]
+
+# add ACCD assay results
+pgp_master$`ACC` <- pgp_accd$ACCD_RGR[match(pgp_master$BCW_ID, pgp_accd$BCW_ID)]
+
+# add Auxin assay results
+pgp_master$`IAA` <- pgp_auxin$IAA_mg_ml_avg[match(pgp_master$BCW_ID, pgp_auxin$BCW_ID)]
+
+# add Phosphate solubility assay results
+pgp_master$`PO4` <- pgp_po4$PO4_mg_L_avg[match(pgp_master$BCW_ID, pgp_po4$BCW_ID)]
+
+# add siderophore assay results
+pgp_master$`SID` <- pgp_sidero$Sidero_units_avg[match(pgp_master$BCW_ID, pgp_sidero$BCW_ID)]
+
+# read in bcw_id and genus map table
+bcw_id_genus <- read.csv("./bcw_id_genus.csv", header = T)
+
+# Genus classification for each isolate
+pgp_master$Genus <- bcw_id_genus$Genus[match(pgp_master$BCW_ID, bcw_id_genus$BCW_ID)]
+
+## assign a unique color to each genus
+pgp_genus_colors <- data.frame(Genus = unique(pgp_master$Genus), Color =  distinctColorPalette(length(unique(pgp_master$Genus))))
+### match
+pgp_master$Color <- pgp_genus_colors$Color[match(pgp_master$Genus, pgp_genus_colors$Genus)]
+
+# add genome assembly size
+pgp_master$Assembly_size <- asm_no_euk_stats$Total.Length..Mb.[match(pgp_master$BCW_ID, asm_no_euk_stats$Isolate)]
+
+# add n_bin data
+pgp_master$n_bins <- asm_no_euk_stats$Bins..n.[match(pgp_master$BCW_ID, asm_no_euk_stats$Isolate)]
+
+## change number of significant digits for numeric values to 3
+pgp_master <- pgp_master %>% mutate_if(is.numeric, round, digits = 3)
+
+# Remove incomplete cases (Isolates with NA values for PGP assays)
+pgp_master <- drop_na(pgp_master)
+str(pgp_master)
+
+```
+
+### Complex Heatmap for All PGP isolate assay data
+```{r}
+# Create matrices for plotting & make rownames isolate id
+
+## 15N Ratio
+pgp_master_N15_mat <- as.matrix(pgp_master[,2])
+rownames(pgp_master_N15_mat) <- pgp_master$BCW_ID
+pgp_N15_col <- inferno(direction = -1, 6)
+
+## ACCD Assay
+pgp_master_ACCD_mat <- as.matrix(pgp_master[,3])
+rownames(pgp_master_ACCD_mat) <- pgp_master$BCW_ID
+pgp_ACCD_col <- viridis(direction = -1, 6)
+
+## Auxin Assay
+pgp_master_auxin_mat <- as.matrix(pgp_master[,4])
+rownames(pgp_master_auxin_mat) <- pgp_master$BCW_ID
+pgp_auxin_col <- plasma(direction = -1, 6)
+
+## Phosphate Assay
+pgp_master_po4_mat <- as.matrix(pgp_master[,5])
+rownames(pgp_master_po4_mat) <- pgp_master$BCW_ID
+pgp_po4_col <- magma(direction = -1, 6)
+
+## Siderophore Assay
+pgp_master_Siderophore_mat <- as.matrix(pgp_master[,6])
+rownames(pgp_master_Siderophore_mat) <- pgp_master$BCW_ID
+pgp_Siderophore_col <- cividis(direction = -1, 6)
+
+
+
+## 15N Heatmap
+pgp_master_N15_chm <- 
+  Heatmap(pgp_master_N15_mat,
+          name = "BNF (15N/14N)",
+          show_row_names = F,
+          col = pgp_N15_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## ACCD RGR Heatmap
+pgp_master_ACCD_chm <- 
+  Heatmap(pgp_master_ACCD_mat,
+          name = "ACC (RGR)",
+          show_row_names = F,
+          col = pgp_ACCD_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Auxin Heatmap
+pgp_master_auxin_chm <- 
+  Heatmap(pgp_master_auxin_mat,
+          name = "IAA (mg/mL)",
+          show_row_names = F,
+          col = pgp_auxin_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 220, 50),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Phosphate Heatmap
+pgp_master_po4_chm <- 
+  Heatmap(pgp_master_po4_mat,
+          name = "PO4 (mg/L)",
+          show_row_names = F,
+          col = pgp_po4_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 2200, 500),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Siderophore Heatmap
+pgp_master_Siderophore_chm <- 
+  Heatmap(pgp_master_Siderophore_mat,
+          name = "SID (% Units)",
+          show_row_names = F,
+          col = pgp_Siderophore_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(-1.5, 1.0, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Genus Heatmap
+pgp_genus_col <- unique(pgp_master$Color)
+
+pgp_master_genus_chm <-
+  Heatmap(pgp_master$Genus,
+          name = "Genus",
+          col = pgp_genus_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(ncol = 2,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          width = unit(5, "mm"))
+
+pgp_master_list <- pgp_master_N15_chm + 
+  pgp_master_ACCD_chm + 
+  pgp_master_auxin_chm + 
+  pgp_master_po4_chm +
+  pgp_master_Siderophore_chm +
+  pgp_master_genus_chm
+
+
+pgp_master_chm <- 
+draw(pgp_master_list, heatmap_legend_side = "right")
+
+```
+
+
+### Select Single Isolates
+
+```{r}
+# Filter to select only genus classified isolates (pure)
+pgp_master_single_ids <- pgp_master %>% filter(Genus !="unassigned")
+#                                               &
+#                                      n_bins != "2" &
+#                                      n_bins != "3" &
+#                                      n_bins != "4" &
+#                                      n_bins != "5")
+#
+# Remove incomplete cases (Isolates with NA values for PGP assays)
+pgp_master_single_ids <- drop_na(pgp_master_single_ids)
+
+# Genus colors for single isolate cases
+pgp_genus_single_col <- unique(pgp_master_single_ids$Color)
+
+# Create matrices for plotting & make rownames isolate id
+
+## 15N Ratio
+pgp_master_single_ids_N15_mat <- as.matrix(pgp_master_single_ids[,2])
+rownames(pgp_master_single_ids_N15_mat) <- pgp_master_single_ids$BCW_ID
+pgp_N15_col <- inferno(direction = -1, 6)
+
+## ACCD Assay
+pgp_master_single_ids_ACCD_mat <- as.matrix(pgp_master_single_ids[,3])
+rownames(pgp_master_single_ids_ACCD_mat) <- pgp_master_single_ids$BCW_ID
+pgp_ACCD_col <- viridis(direction = -1, 6)
+
+## Auxin Assay
+pgp_master_single_ids_auxin_mat <- as.matrix(pgp_master_single_ids[,4])
+rownames(pgp_master_single_ids_auxin_mat) <- pgp_master_single_ids$BCW_ID
+pgp_auxin_col <- plasma(direction = -1, 6)
+
+## Phosphate Assay
+pgp_master_single_ids_po4_mat <- as.matrix(pgp_master_single_ids[,5])
+rownames(pgp_master_single_ids_po4_mat) <- pgp_master_single_ids$BCW_ID
+pgp_po4_col <- magma(direction = -1, 6)
+
+## Siderophore Assay
+pgp_master_single_ids_Siderophore_mat <- as.matrix(pgp_master_single_ids[,6])
+rownames(pgp_master_single_ids_Siderophore_mat) <- pgp_master_single_ids$BCW_ID
+pgp_Siderophore_col <- cividis(direction = -1, 6)
+
+
+
+## 15N Heatmap
+pgp_master_single_ids_N15_chm <- 
+  Heatmap(pgp_master_single_ids_N15_mat,
+          name = "BNF (15N/14N)",
+          width = unit(0, "cm"),
+          show_row_names = F,
+          col = pgp_N15_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## ACCD RGR Heatmap
+pgp_master_single_ids_ACCD_chm <- 
+  Heatmap(pgp_master_single_ids_ACCD_mat,
+          name = "ACC (RGR)",
+          show_row_names = F,
+          col = pgp_ACCD_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 5, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Auxin Heatmap
+pgp_master_single_ids_auxin_chm <- 
+  Heatmap(pgp_master_single_ids_auxin_mat,
+          name = "IAA (mg/mL)",
+          show_row_names = F,
+          col = pgp_auxin_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 220, 50),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Phosphate Heatmap
+pgp_master_single_ids_po4_chm <- 
+  Heatmap(pgp_master_single_ids_po4_mat,
+          name = "PO4 (mg/L)",
+          show_row_names = F,
+          col = pgp_po4_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(0, 2200, 500),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Siderophore Heatmap
+pgp_master_single_ids_Siderophore_chm <- 
+  Heatmap(pgp_master_single_ids_Siderophore_mat,
+          name = "SID (% Units)",
+          show_row_names = F,
+          col = pgp_Siderophore_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(at = seq(-1.5, 1.0, 0.5),
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(6, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          row_names_gp = gpar(fontsize = 1.2))
+
+## Genus Heatmap
+pgp_genus_col <- unique(pgp_master_single_ids$Color)
+
+pgp_master_single_ids_genus_chm <-
+  Heatmap(pgp_master_single_ids$Genus,
+          name = "Genus",
+          col = pgp_genus_single_col,
+          column_names_gp = gpar(fontsize = 10),
+          heatmap_legend_param = list(ncol = 2,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topcenter"),
+          width = unit(5, "mm"))
+
+pgp_master_single_ids_list <- pgp_master_single_ids_N15_chm + 
+  pgp_master_single_ids_ACCD_chm + 
+  pgp_master_single_ids_auxin_chm + 
+  pgp_master_single_ids_po4_chm +
+  pgp_master_single_ids_Siderophore_chm +
+  pgp_master_single_ids_genus_chm
+
+
+pgp_master_single_ids_chm <- 
+draw(pgp_master_single_ids_list, ht_gap = unit(0.1, "cm"), heatmap_legend_side = "right")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+

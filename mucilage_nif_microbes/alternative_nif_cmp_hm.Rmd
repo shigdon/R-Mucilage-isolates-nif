@@ -1,0 +1,171 @@
+---
+title: "alternative_nif_cmp"
+author: "Shawn Higdon"
+date: "10/15/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ape)
+library(readr)
+library(dplyr)
+library(circlize)
+library(ComplexHeatmap)
+library(viridis)
+library(RColorBrewer)
+library(randomcoloR)
+```
+
+
+## Bins >=1
+```{r}
+
+smash_alt_nif_df <- read.csv("./alt_nif_sourmash/alt_nif_k31.csv", header = T, colClasses = "character", check.names = F) # READ in distance matrix generated from sourmash compare
+
+abb_genome_bcw_labels <- read.csv("abb_genome_bcw_labels.csv", header = T)
+
+all_genome_k31_lca <- read.csv("all_genomes_k31-smLCA-out.csv", header = T) # read in sourmash LCA classification data
+
+## read in number of bins from metabat
+all_genome_bin_count <- read.csv("./all_bin_count.csv", header = F, col.names = c("ID", "n_bins"))
+all_genome_bin_count$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_bin_count$ID, abb_genome_bcw_labels$ABB_ID)]
+
+all_genome_k31_lca$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_k31_lca$ID, abb_genome_bcw_labels$ABB_ID)]
+
+rownames(smash_alt_nif_df) <- colnames(smash_alt_nif_df) # make rownames equal to colnames
+
+smash_alt_nif_df$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(rownames(smash_alt_nif_df), abb_genome_bcw_labels$ABB_ID)] # add BCW_ID
+
+rownames(smash_alt_nif_df) <- smash_alt_nif_df$BCW_ID # Change rownames to BCW_IDS
+
+smash_alt_nif_df <- smash_alt_nif_df[,c(-60)] #remove BCW_ID
+
+colnames(smash_alt_nif_df) <- rownames(smash_alt_nif_df)
+
+smash_alt_nif_df$genus <- all_genome_k31_lca$genus[match(rownames(smash_alt_nif_df), all_genome_k31_lca$BCW_ID)] # add genus assignment to each row of dataframe
+
+# empty cells for genus are 'unassigned'
+smash_alt_nif_df$genus <- sub("^$", "unassigned", smash_alt_nif_df$genus)
+
+# add bin number to each row of dataframe
+smash_alt_nif_df$bins <- all_genome_bin_count$n_bins[match(rownames(smash_alt_nif_df), all_genome_bin_count$BCW_ID)] 
+
+# make distinct color palette for genus colors
+smash_alt_nif_genus_colors <- distinctColorPalette(length(unique(smash_alt_nif_df$genus)))
+
+# make distinct color palette for n_bins colors
+smash_alt_nif_n_bins_colors <- distinctColorPalette(length(unique(smash_alt_nif_df$bins)))
+
+# make matrix for plotting
+smash_alt_nif_mat <- as.matrix(smash_alt_nif_df[, grep("BCW_2", colnames(smash_alt_nif_df), rownames(smash_alt_nif_df))])
+
+# make 'smash_mat' numeric in type
+class(smash_alt_nif_mat) <- "numeric"
+
+# assign matrix color scale
+smash_mat_color <- viridis(direction = -1, 10)
+
+# make the complex heatmap
+
+chm_smash_alt_nif_mat <- 
+  Heatmap(smash_alt_nif_mat,
+          name = "Jaccard Index",
+          heatmap_legend_param = list(at = seq(0, 1, 0.1)),
+          col = smash_mat_color,
+          row_names_gp = gpar(fontsize = 5),
+          column_names_gp = gpar(fontsize = 5)
+  )
+
+chm_smash_alt_nif_genus <- 
+  Heatmap(smash_alt_nif_df$genus, name = "Genus", col = smash_alt_nif_genus_colors, 
+          width = unit(5, "mm"))
+
+chm_smash_alt_nif_bins <- 
+  Heatmap(smash_alt_nif_df$bins, name = "Bins", col = smash_alt_nif_n_bins_colors, 
+          width = unit(5, "mm"))
+
+chm_smash_alt_nif_list <- chm_smash_alt_nif_mat + chm_smash_alt_nif_genus + chm_smash_alt_nif_bins
+
+#draw(chm_smash_alt_nif_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+
+## Mono-isolate Prokaryotes (Bins == 1)
+```{r}
+
+smash_alt_nif_mono_prok_df <- read.csv("./alt_nif_sourmash/mono_prok/alt_nif_mono_prok_k31.csv", header = T, colClasses = "character", check.names = F) # READ in distance matrix generated from sourmash compare
+
+abb_genome_bcw_labels <- read.csv("abb_genome_bcw_labels.csv", header = T)
+
+all_genome_k31_lca <- read.csv("all_genomes_k31-smLCA-out.csv", header = T) # read in sourmash LCA classification data
+
+## read in number of bins from metabat
+all_genome_bin_count <- read.csv("./all_bin_count.csv", header = F, col.names = c("ID", "n_bins"))
+all_genome_bin_count$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_bin_count$ID, abb_genome_bcw_labels$ABB_ID)]
+
+all_genome_k31_lca$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(all_genome_k31_lca$ID, abb_genome_bcw_labels$ABB_ID)]
+
+rownames(smash_alt_nif_mono_prok_df) <- colnames(smash_alt_nif_mono_prok_df) # make rownames equal to colnames
+
+smash_alt_nif_mono_prok_df$BCW_ID <- abb_genome_bcw_labels$BCW_ID[match(rownames(smash_alt_nif_mono_prok_df), abb_genome_bcw_labels$ABB_ID)] # add BCW_ID
+
+rownames(smash_alt_nif_mono_prok_df) <- smash_alt_nif_mono_prok_df$BCW_ID # Change rownames to BCW_IDS
+
+smash_alt_nif_mono_prok_df <- smash_alt_nif_mono_prok_df[,c(-44)] #remove BCW_ID
+
+colnames(smash_alt_nif_mono_prok_df) <- rownames(smash_alt_nif_mono_prok_df)
+
+smash_alt_nif_mono_prok_df$genus <- all_genome_k31_lca$genus[match(rownames(smash_alt_nif_mono_prok_df), all_genome_k31_lca$BCW_ID)] # add genus assignment to each row of dataframe
+
+# empty cells for genus are 'unassigned'
+smash_alt_nif_mono_prok_df$genus <- sub("^$", "unassigned", smash_alt_nif_mono_prok_df$genus)
+
+# add bin number to each row of dataframe
+smash_alt_nif_mono_prok_df$bins <- all_genome_bin_count$n_bins[match(rownames(smash_alt_nif_mono_prok_df), all_genome_bin_count$BCW_ID)] 
+
+# make distinct color palette for genus colors
+smash_alt_nif_mono_prok_genus_colors <- distinctColorPalette(length(unique(smash_alt_nif_mono_prok_df$genus)))
+
+# make distinct color palette for n_bins colors
+smash_alt_nif_mono_prok_n_bins_colors <- distinctColorPalette(length(unique(smash_alt_nif_mono_prok_df$bins)))
+
+# make matrix for plotting
+smash_alt_nif_mono_prok_mat <- as.matrix(smash_alt_nif_mono_prok_df[, grep("BCW_2", colnames(smash_alt_nif_mono_prok_df), rownames(smash_alt_nif_mono_prok_df))])
+
+# make 'smash_mat' numeric in type
+class(smash_alt_nif_mono_prok_mat) <- "numeric"
+
+# assign matrix color scale
+smash_mat_color <- viridis(direction = -1, 10)
+
+# make the complex heatmap
+
+chm_smash_alt_nif_mono_prok_mat <- 
+  Heatmap(smash_alt_nif_mono_prok_mat,
+          name = "Jaccard Index",
+          heatmap_legend_param = list(at = seq(0, 1, 0.1)),
+          col = smash_mat_color,
+          row_names_gp = gpar(fontsize = 5),
+          column_names_gp = gpar(fontsize = 5)
+  )
+
+chm_smash_alt_nif_mono_prok_genus <- 
+  Heatmap(smash_alt_nif_mono_prok_df$genus, name = "Genus", col = smash_alt_nif_mono_prok_genus_colors, 
+          width = unit(5, "mm"))
+
+chm_smash_alt_nif_mono_prok_bins <- 
+  Heatmap(smash_alt_nif_mono_prok_df$bins, name = "Bins", col = smash_alt_nif_mono_prok_n_bins_colors, 
+          width = unit(5, "mm"))
+
+chm_smash_alt_nif_mono_prok_list <- chm_smash_alt_nif_mono_prok_mat + chm_smash_alt_nif_mono_prok_genus + chm_smash_alt_nif_mono_prok_bins
+
+#draw(chm_smash_alt_nif_mono_prok_list, heatmap_legend_side = "right", annotation_legend_side = "right")
+```
+
+
+
+

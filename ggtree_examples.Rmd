@@ -1,0 +1,66 @@
+---
+title: "Fig_3_Analysis"
+author: "Shawn Higdon"
+date: "2/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(treeio)
+library(ggtree)
+library(tidyverse)
+library(RColorBrewer)
+library(randomcoloR)
+library(phytools)
+```
+
+```{r}
+# read the tree from GitHub
+tree <- read.nexus("https://raw.githubusercontent.com/rgriff23/Dissertation/master/Chapter_2/data/tree.nex")
+
+# simulate 5 continous BM traits
+set.seed(23) # reproducible
+traits <- data.frame(fastBM(tree, nsim=5))
+```
+
+```{r}
+# basic plot
+p8 <- ggtree(tree, layout = "circular") + 
+  xlim(0, 125) +
+  geom_tiplab(aes(angle=angle), size=2, offset=17) 
+
+# add heatmap
+p9 <-  gheatmap(p8, traits, offset=0.2, width=0.2, low="white", high="black", colnames_position = "top", font.size=2)
+
+# plot
+plot(p9)
+```
+
+```{r}
+# make traits binary (presence-absence)
+traits.binary <- data.frame(matrix(ifelse(stack(traits)$values > mean(stack(traits)$values), "present", "absent"), 65, 5))
+row.names(traits.binary) <- row.names(traits)
+
+# add heatmap
+p10 <-  gheatmap(p8, traits.binary, offset=0.2, width=0.2, low="white", high="black", colnames_position = "top", font.size=2, color="black") + 
+    scale_fill_manual(values=c("white", "black"))
+
+# plot
+plot(p10)
+```
+
+
+
+
+
+
+
+
+
+
+
+

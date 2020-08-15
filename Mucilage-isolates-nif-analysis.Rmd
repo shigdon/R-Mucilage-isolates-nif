@@ -1,0 +1,1542 @@
+---
+title: "nif_gene_analysis"
+author: "Shawn Higdon"
+date: "2/18/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r, message=FALSE}
+library(treeio)
+library(ggtree)
+library(ggnewscale)
+library(ComplexHeatmap)
+library(tidyverse)
+library(ape)
+library(circlize)
+library(dendextend)
+library(randomcoloR)
+library(RColorBrewer)
+```
+
+## Read in metadata files
+```{r}
+# ABB to BCW ID MAP
+abb_bcw_labels <- read.csv("./genome_metadata/abb_genome_bcw_labels.csv", header = T)
+## change _ to - for BCW id
+abb_bcw_labels$BCW_ID <- sub("_", "-", abb_bcw_labels$BCW_ID)
+
+# read in number of bins from metabat
+metabat_bins <- read.csv("./genome_metadata/all_bin_count.csv", header = F, col.names = c("ID", "n_bins"))
+metabat_bins$bcw_id <- abb_bcw_labels$BCW_ID[match(metabat_bins$ID, abb_bcw_labels$ABB_ID)]
+
+# Sourmash LCA Genome Classification Data from gtdb
+smash_lca_gtdb <- read.csv("./sourmash_data/lca-classify-all-k31-gtdb89.csv", header = T, colClasses = "character")
+
+# Sourmash LCA Genbank Classification Data
+smash_lca_whole_genomes <- read.csv("./sourmash_data/sm-lca-whole_genomes-all-k31.csv", header = T, colClasses = "character")
+
+# Read in quast Summary for all isolate assemblies done with MEgahit
+asm_stats <- read_tsv("genome_metadata/assembly_stats/all_quast_reports.tsv") # includes eukaryotic isolates
+
+# Read in assembly coverage stat table
+asm_cov <- read.table("genome_metadata/assembly_stats/avg_coverage.tsv", header = T)
+
+# Add AVG_COV to asm_stats
+asm_stats <- inner_join(asm_stats, asm_cov, by = "Assembly")
+
+# Read in 15N Assay Data
+N15_data <- read_csv("./15N_analysis/PGP_15N_data.csv", col_names = T)
+## change _ to - for bcw_id
+N15_data$BCW_ID <- sub("_", "-", N15_data$BCW_ID)
+
+```
+
+## Add BCW labels to genbank lca file
+```{r}
+
+# Add BCW label to sourmash lca data
+smash_lca_whole_genomes$bcw_id <- abb_bcw_labels$BCW_ID[match(smash_lca_whole_genomes$ID, abb_bcw_labels$ABB_ID)]
+## change _ to - for bcw id
+smash_lca_whole_genomes$bcw_id <- sub("_", "-", smash_lca_whole_genomes$bcw_id)
+```
+
+## Merged Genus lca taxonomy
+```{r}
+# add genera identified with genbank to gtdb lca taxonomy
+gtdb_merge <- as_tibble(smash_lca_gtdb) %>%
+  select(-status, -strain) %>%
+  setNames(paste0(names(.), '.gtdb')) %>%
+  rename(ID = ID.gtdb)
+
+gbk_merge <- as_tibble(smash_lca_whole_genomes) %>%
+  select(-ID, -status, -strain) %>%
+  setNames(paste0(names(.), '.gbk')) %>%
+  rename(ID = bcw_id.gbk) %>%
+  filter(ID %in% gtdb_merge$ID)
+
+lca_merged <- right_join(gtdb_merge, gbk_merge, by = "ID")
+
+lca_merged <- lca_merged %>% 
+  mutate(genus = ifelse(genus.gtdb %in% "", genus.gbk, genus.gtdb)) %>% # push gbk genus to empty gtdb
+  select(ID, superkingdom.gtdb, phylum.gtdb, class.gtdb, order.gtdb, family.gtdb, genus, species.gtdb) %>% # select columns want to keep
+  rename_at(vars(matches(".gtdb")), ~ str_remove(., ".gtdb")) # remove suffix
+  
+
+```
+
+
+
+## List Single bin isolates - Table S5
+```{r}
+# create new dataframe
+single_isolates <- metabat_bins %>% select(bcw_id, n_bins) %>% rename(ID = bcw_id)
+
+# add GenBank genus info to sm_k31
+single_isolates$genus.gbk <- smash_lca_whole_genomes$genus[match(single_isolates$ID,
+                                                            smash_lca_whole_genomes$bcw_id)]
+
+# add GTDB genus info to sm_k31
+single_isolates$genus.gtdb <- smash_lca_gtdb$genus[match(single_isolates$ID,
+                                                    smash_lca_gtdb$ID)]
+
+# push Genbank genus assignments to unclassified genus assignments (fill in the blanks)
+genus_merge <- single_isolates %>% select("ID", "genus.gbk", "genus.gtdb")
+genus_merge <- genus_merge %>% mutate(genus.gtdb = ifelse(genus.gtdb %in% "", genus.gbk, genus.gtdb))
+
+# add genus data
+single_isolates$genus <- genus_merge$genus.gtdb[match(single_isolates$ID,
+                                                 genus_merge$ID)]
+
+# empty cells for genus are 'unassigned'
+single_isolates$genus <- sub("^$", "unassigned", single_isolates$genus)
+
+# remove eukaryotes
+single_isolates <- single_isolates %>% filter(genus != "Meyerozyma" &
+                                                genus != "Rhodotorula")
+# remove isolates that were pulled apart
+single_isolates <- single_isolates %>% filter(ID != "BCW-201831.1" &
+                                                ID != "BCW-201831.2" &
+                                                ID != "BCW-200557.1" &
+                                                ID != "BCW-200557.2")
+# Keep only isolates with 1 genomic bin
+single_isolates <- single_isolates %>% filter(n_bins == 1)
+
+# add abb_ids
+single_isolates$abb_id <- abb_bcw_labels$ABB_ID[match(single_isolates$ID, abb_bcw_labels$BCW_ID)]
+
+# add total length of genome assembly
+single_isolates$asm_length <- asm_stats$`Total length`[match(single_isolates$abb_id, asm_stats$Assembly)]
+
+# remove isolates with genome assembly length > 10 Mbp
+single_isolates <- single_isolates %>% filter(asm_length < 10000000)
+single_isolates$asm_length <- single_isolates$asm_length/1000000
+single_isolates$asm_length <- round(single_isolates$asm_length, digits = 2)
+
+# add N50 of genome assembly
+single_isolates$N50 <- asm_stats$N50[match(single_isolates$abb_id, asm_stats$Assembly)]
+single_isolates$N50 <- single_isolates$N50/1000
+single_isolates$N50 <- round(single_isolates$N50, digits = 2)
+
+# add N contigs
+single_isolates$n_contigs <- asm_stats$`# contigs`[match(single_isolates$abb_id, asm_stats$Assembly)]
+
+# add Avg_Cov
+single_isolates$avg_cov <- asm_stats$AVG_COV[match(single_isolates$abb_id, asm_stats$Assembly)]
+
+# create unique genus color for plotting
+genus_colors <- data.frame(Genus = unique(single_isolates$genus)) %>% as_tibble() %>%
+  arrange(Genus) %>%
+  mutate(Color = c("#8EAFEB",
+                             "#9A61CE",
+                             "#8244E7",
+                             "#5DE58E",
+                             "#DE47DF",
+                             "#DFDC8F",
+                             "#79A560",
+                             "#DFE9D4",
+                             "#BDE9B4",
+                             "#E17FD9",
+                             "#9EEADA",
+                             "#6FE453",
+                             "#E1CFE2",
+                             "#5296B1",
+                             "#DA9EC3",
+                             "#919F85",
+                             "#906981",
+                             "#65E2BA",
+                             "#D9B99D",
+                             "#D6EC49",
+                             "#D8905B",
+                             "#DB459C",
+                             "#DC8790",
+                             "#6D79D1",
+                             "#A4C9DC",
+                             "#B0E477",
+                             "#E4C34F",
+                             "#5DD8E0",
+                             "#CFA3E9",
+                             "#E34D56"))#, Color =  distinctColorPalette(length(unique(single_isolates$genus))))
+
+## add genus color to `single_isolates` dataframe
+single_isolates$genus_color <- genus_colors$Color[match(single_isolates$genus, genus_colors$Genus)]
+
+```
+
+
+## Read in the hmmscan output files
+
+> Genomes 214 and 231 have zero hits. This is due to failure of sequencing or extremely low coverage. Output files were removed.
+
+> Note: If a table in the list of data.frames is empty, an error will occur when attempting to use mapply(cbind, df_list, "new_var"=v1, SIMPLIFY=F)
+
+## Read in HMMsearch - NIFscan_V2 files
+```{r, message=FALSE}
+# Create a list of isolate genome IDs
+Kp_all_isolate_list <- read.table("./NIF_operon_metadata/all_Kp_input.txt")
+
+# Read in the hmmscan Search output files for nif genes in each isolate's annotated faa list
+Kp_nifscan_list <- list.files(path = "NIFscan_v2_output/kleb_pneu", pattern = 'Kp_*', recursive = T, full.names = T)
+#Kp_nifscan_list
+
+# Create a list of Kleb_pneu nifscan search output tables
+Kp_nifscan_tbl_list <- lapply(Kp_nifscan_list, read_tsv)
+
+# Add a column to every table that indicates the isolate genome for each NIF-TIGRFAM hmmscan hit
+Kp_nifscan_tbl_list <- mapply(cbind, Kp_nifscan_tbl_list, "isolate"=Kp_all_isolate_list$V1, SIMPLIFY=F)
+
+# Create One Dataframe for NIF-TIGRFAM matches of all isolates
+Kp_nifscan_df <- do.call("rbind", Kp_nifscan_tbl_list)
+
+# Add a column to each record that adds annotation information for each TIGRFAM
+## Read in map file
+Kp_hmm_map <- read_tsv("./NIF_operon_metadata/kleb_pneum_nif_regulon.txt", col_names = T)
+
+## match HMM annotation from kp_hmm_map to nifscan family name
+Kp_nifscan_df$gene <- Kp_hmm_map$gene[match(Kp_nifscan_df$Family, Kp_hmm_map$hmm)]
+
+## match ABB isolate ID on Kp_nifscan_df to BCW_ID on abb_genome_bcw_labels
+Kp_nifscan_df$bcw_id <- abb_bcw_labels$BCW_ID[match(Kp_nifscan_df$isolate, abb_bcw_labels$ABB_ID)]
+
+# create ordered list of nif genes columns for plotting
+Kp_operon_order <- c("nifA",
+                     "nifL",
+                     "nifJ",
+                     "nifH",
+                     "nifD",
+                     "nifK",
+                     "nifE",
+                     "nifN",
+                     "nifU",
+                     "nifS",
+                     "nifV",
+                     "nifM",
+                     "nifW",
+                     "nifF",
+                     "nifB",
+                     "nifQ")
+```
+
+## Filter on complete PGP cases
+```{r, message=FALSE}
+## Filter to keep only records that match single_isolate_complete_cases
+Kp_nifscan_df <- Kp_nifscan_df %>% filter(bcw_id %in% single_isolates$ID)
+
+## Check the number of surivivng isolates among all records for HMM data
+n_distinct(Kp_nifscan_df$bcw_id)
+
+```
+
+> 492 of the 611 genomes survived the filtering, which agrees with number of complete cases for PGP assay data of single genomic bin isolates.
+
+## Filtering functions
+```{r}
+
+# Create a Function to Filter with max. e-value cut off and 0.3 min. model coverage
+psHMM_0.3_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.35)
+}
+
+# Create a Function to Filter with max. e-value cut off and 0.5 min. model coverage
+psHMM_0.5_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.5)
+}
+
+# Create a Function to Filter with max. e-value cut off and 0.9 min. model coverage
+psHMM_0.75_filter <- function(x) {
+  filter(x, `E-value` <= 1e-06, `Coverage` >= 0.75)
+}
+
+```
+
+## 75 % HMM coverage
+
+```{r}
+Kp_nifscan_0.75_fdf <- psHMM_0.75_filter(Kp_nifscan_df) # Filtering with coverage >= 0.9 and E-val =< 1e-06 
+
+n_distinct(Kp_nifscan_0.75_fdf$bcw_id)
+```
+
+### Count the Hits
+
+```{r}
+
+# count number of records for unique combinations of TIGRFAM, BCW_ID, pro_query
+Kp_nifscan_0.75_fdf_grp <- Kp_nifscan_0.75_fdf %>% 
+  group_by(Family, bcw_id, Query_ID) %>% 
+  summarise(count=n())
+
+Kp_nifscan_0.75_fdf_grp
+
+
+# Identify which records have multiple hits returned
+Kp_nifscan_0.75_fdf_replicates <- Kp_nifscan_0.75_fdf_grp %>% 
+  filter(count != 1)
+
+n_distinct(Kp_nifscan_0.75_fdf_replicates$bcw_id)
+
+```
+
+> There are zero duplicated records of genes matching an HMM included in the search.
+
+## Generate Counts for Heatmap
+```{r}
+# Create a data frame with new variable of counts for each annotation call
+Kp_hmm_0.75_count <- Kp_nifscan_0.75_fdf %>% group_by(gene, bcw_id) %>% count()
+
+n_distinct(Kp_hmm_0.75_count$bcw_id)
+
+# convert annotation calls to factor type
+Kp_hmm_0.75_count$gene <- as.factor(Kp_hmm_0.75_count$gene)
+
+# convert dataframe from narrow to wide format: rows as isolates, columns as genes
+Kp_hmm_0.75_count_df <- spread(Kp_hmm_0.75_count, gene, n, drop = T)
+
+# replace all NA values with count of '0'
+Kp_hmm_0.75_count_df[is.na(Kp_hmm_0.75_count_df)] <- 0
+
+```
+
+
+## 75% HMM coverage: Dos Santos Positive (dsp) - Group A
+```{r}
+# Create Filtered Data Frame that satisfies the conditions of Santos minimum gene set:
+Kp_nifscan_0.75_dsp_df <- filter(Kp_hmm_0.75_count_df,
+                                    nifH >= 1 &
+                                    nifD >= 1 &
+                                    nifK >= 1 &
+                                    nifE >= 1 &
+                                    nifN >= 1 &
+                                    nifB >= 1
+                              )
+n_distinct(Kp_nifscan_0.75_dsp_df$bcw_id)
+
+# reorder the columns with Kp_operon_order
+Kp_nifscan_0.75_dsp_df <- Kp_nifscan_0.75_dsp_df %>% select(Kp_operon_order, everything())
+
+# make as.data.frame
+Kp_nifscan_0.75_dsp_df <- as.data.frame(Kp_nifscan_0.75_dsp_df)
+
+# Add Sourmash LCA Genus data
+Kp_nifscan_0.75_dsp_df$genus <- single_isolates$genus[match(Kp_nifscan_0.75_dsp_df$bcw_id, single_isolates$ID)]
+
+# Add Unique Genus Colors
+Kp_nifscan_0.75_dsp_df$genus_colors <- single_isolates$genus_color[match(Kp_nifscan_0.75_dsp_df$bcw_id, single_isolates$ID)]
+
+# Add 15N Ratio data
+Kp_nifscan_0.75_dsp_df$`15N/14N` <- N15_data$ratio[match(Kp_nifscan_0.75_dsp_df$bcw_id, N15_data$BCW_ID)]
+
+# Create tx_name Variable with Hybrid genus + Isolate Name: GENUS sp. BCWXXXX
+Kp_nifscan_0.75_dsp_df$tx_name <- paste(Kp_nifscan_0.75_dsp_df$genus, sprintf("sp. %s", Kp_nifscan_0.75_dsp_df$bcw_id))
+
+# make rownames tx_name
+rownames(Kp_nifscan_0.75_dsp_df) <- Kp_nifscan_0.75_dsp_df$tx_name
+
+## create matrix from dataframe
+Kp_nifscan_0.75_dsp_mat <- as.matrix(Kp_nifscan_0.75_dsp_df[, grep("nif", colnames(Kp_nifscan_0.75_dsp_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_nifscan_0.75_dsp_mat) <- Kp_nifscan_0.75_dsp_df$tx_name
+
+max(Kp_nifscan_0.75_dsp_mat)
+
+# Save list of single, santos positive isolate genome ids for sourmash compare
+
+## create list as dataframe
+pure.iso_complete.case_list_dsp <- data.frame(ID = Kp_nifscan_0.75_dsp_df$bcw_id)
+
+## write csv file
+write_csv(pure.iso_complete.case_list_dsp, "./R_output_files/pure.iso_complete.case_list_dsp.csv", col_names = F)
+```
+
+> 193 isolates have nifHDKENB @ 75% model coverage with evalue <= 1e-06.
+
+> Maximum number of hits for a single gene in an isolate is 6.
+
+## 75% HMM coverage: Dos Santos Negative (dsn) - Group B
+```{r}
+# Create Filtered Data Frame that satisfies the conditions of Santos minimum gene set:
+Kp_nifscan_0.75_dsn_df <- filter(Kp_hmm_0.75_count_df,
+                                    nifH == 0 &
+                                    nifD == 0 &
+                                    nifK == 0 &
+                                    nifE == 0 &
+                                    nifN == 0 &
+                                    nifB == 0
+                              )
+n_distinct(Kp_nifscan_0.75_dsn_df$bcw_id)
+
+# reorder the columns with Kp_operon_order
+Kp_nifscan_0.75_dsn_df <- Kp_nifscan_0.75_dsn_df %>% select(Kp_operon_order, everything())
+
+# make as.data.frame
+Kp_nifscan_0.75_dsn_df <- as.data.frame(Kp_nifscan_0.75_dsn_df)
+
+# Add Sourmash LCA Genus data
+Kp_nifscan_0.75_dsn_df$genus <- single_isolates$genus[match(Kp_nifscan_0.75_dsn_df$bcw_id, single_isolates$ID)]
+
+# Add Unique Genus Colors
+Kp_nifscan_0.75_dsn_df$genus_colors <- single_isolates$genus_color[match(Kp_nifscan_0.75_dsn_df$bcw_id, single_isolates$ID)]
+
+# Add 15N Ratio data
+Kp_nifscan_0.75_dsn_df$`15N/14N` <- N15_data$ratio[match(Kp_nifscan_0.75_dsn_df$bcw_id, N15_data$BCW_ID)]
+
+# Create tx_name Variable with Hybrid genus + Isolate Name: GENUS sp. BCWXXXX
+Kp_nifscan_0.75_dsn_df$tx_name <- paste(Kp_nifscan_0.75_dsn_df$genus, sprintf("sp. %s", Kp_nifscan_0.75_dsn_df$bcw_id))
+
+# make rownames tx_name
+rownames(Kp_nifscan_0.75_dsn_df) <- Kp_nifscan_0.75_dsn_df$tx_name
+
+## create matrix from dataframe
+Kp_nifscan_0.75_dsn_mat <- as.matrix(Kp_nifscan_0.75_dsn_df[, grep("nif", colnames(Kp_nifscan_0.75_dsn_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_nifscan_0.75_dsn_mat) <- Kp_nifscan_0.75_dsn_df$tx_name
+
+max(Kp_nifscan_0.75_dsn_mat)
+
+# Save list of single, santos positive isolate genome ids for sourmash compare
+
+## create list as dataframe
+pure.iso_complete.case_list_dsn <- data.frame(ID = Kp_nifscan_0.75_dsn_df$bcw_id)
+
+## write csv file
+write_csv(pure.iso_complete.case_list_dsn, "./R_output_files/pure.iso_complete.case_list_dsn.csv", col_names = F)
+```
+
+> 233 isolates have zero hits to nifHDKENB @ 75% model coverage with evalue <= 1e-06.
+
+> Maximum number of hits for a single gene to an individual HMM for an isolate is 4.
+
+## 75% HMM coverage: Semi Dos Santos (sds) - Group C
+```{r}
+# Create Filtered Data Frame that includes isolates not in dsp or dsn groups
+Kp_nifscan_0.75_sds_df <- subset(Kp_hmm_0.75_count_df,
+                                 !(bcw_id %in% Kp_nifscan_0.75_dsp_df$bcw_id) & 
+                                   !(bcw_id %in% Kp_nifscan_0.75_dsn_df$bcw_id))
+
+n_distinct(Kp_nifscan_0.75_sds_df$bcw_id)
+
+# reorder the columns with Kp_operon_order
+Kp_nifscan_0.75_sds_df <- Kp_nifscan_0.75_sds_df %>% select(Kp_operon_order, everything())
+
+# make as.data.frame
+Kp_nifscan_0.75_sds_df <- as.data.frame(Kp_nifscan_0.75_sds_df)
+
+# Add Sourmash LCA Genus data
+Kp_nifscan_0.75_sds_df$genus <- single_isolates$genus[match(Kp_nifscan_0.75_sds_df$bcw_id, single_isolates$ID)]
+
+# Add Unique Genus Colors
+Kp_nifscan_0.75_sds_df$genus_colors <- single_isolates$genus_color[match(Kp_nifscan_0.75_sds_df$bcw_id, single_isolates$ID)]
+
+# Add 15N Ratio data
+Kp_nifscan_0.75_sds_df$`15N/14N` <- N15_data$ratio[match(Kp_nifscan_0.75_sds_df$bcw_id, N15_data$BCW_ID)]
+
+# Create tx_name Variable with Hybrid genus + Isolate Name: GENUS sp. BCWXXXX
+Kp_nifscan_0.75_sds_df$tx_name <- paste(Kp_nifscan_0.75_sds_df$genus, sprintf("sp. %s", Kp_nifscan_0.75_sds_df$bcw_id))
+
+# make rownames tx_name
+rownames(Kp_nifscan_0.75_sds_df) <- Kp_nifscan_0.75_sds_df$tx_name
+
+## create matrix from dataframe
+Kp_nifscan_0.75_sds_mat <- as.matrix(Kp_nifscan_0.75_sds_df[, grep("nif", colnames(Kp_nifscan_0.75_sds_df))])
+
+## make rownames of matrix BCW isolate ID
+rownames(Kp_nifscan_0.75_sds_mat) <- Kp_nifscan_0.75_sds_df$tx_name
+
+max(Kp_nifscan_0.75_sds_mat)
+
+# Save list of single, santos positive isolate genome ids for sourmash compare
+
+## create list as dataframe
+pure.iso_complete.case_list_sds <- data.frame(ID = Kp_nifscan_0.75_sds_df$bcw_id)
+
+## write csv file
+write_csv(pure.iso_complete.case_list_sds, "./R_output_files/pure.iso_complete.case_list_sds.csv", col_names = F)
+```
+
+> 66 isolates have zero hits to nifHDKENB @ 75% model coverage with evalue <= 1e-06.
+
+> Maximum number of hits for a single gene to an individual HMM for an isolate is 5.
+
+
+## Read In and Munge Sourmash K31 Compare Data for Each NIF Group
+
+### Dos-Santos Positive (DSP) - Group A
+```{r}
+# DSP Group
+smash_dsp_cmp <- read.csv("./sourmash_data/dsp_dos-santos-positive/pure_iso_dsp_k31_cmp.csv", header = TRUE, check.names = FALSE)
+
+# set rownames to colnames
+rownames(smash_dsp_cmp) <- colnames(smash_dsp_cmp)
+
+# add bcw ids to smash_dsp_cmp data frame
+smash_dsp_cmp$bcw_id <- rownames(smash_dsp_cmp)
+#smash_dsp_cmp$bcw_id
+
+# add genus info to smash_dsp_cmp
+smash_dsp_cmp$genus <- single_isolates$genus[match(smash_dsp_cmp$bcw_id, single_isolates$ID)]
+#smash_dsp_cmp$genus
+
+# Add Genus Colors
+smash_dsp_cmp$genus_colors <- genus_colors$Color[match(smash_dsp_cmp$genus, genus_colors$Genus)]
+#smash_dsp_cmp$genus_colors
+
+# add tx_name Variable to smash_dsp_cmp
+smash_dsp_cmp$tx_name <- paste(smash_dsp_cmp$genus, sprintf("sp. %s", smash_dsp_cmp$bcw_id))
+#smash_dsp_cmp$tx_name
+
+# Add Nifscan data
+## create NIF gene hit Traits Data.Frame
+NIF_traits_0.75_dsp <- subset(Kp_nifscan_0.75_dsp_df, 
+                              select = grep("nif", colnames(Kp_nifscan_0.75_dsp_df)))
+
+## add bcw_id to NIF trait dataframe
+NIF_traits_0.75_dsp$bcw_id <- Kp_nifscan_0.75_dsp_df$bcw_id[match(rownames(NIF_traits_0.75_dsp), Kp_nifscan_0.75_dsp_df$tx_name)]
+
+# Add 15N data
+smash_dsp_cmp$`15N/14N` <- Kp_nifscan_0.75_dsp_df$`15N/14N`[match(smash_dsp_cmp$bcw_id, Kp_nifscan_0.75_dsp_df$bcw_id)]
+
+## perform merge
+smash_dsp_cmp <- left_join(x = smash_dsp_cmp,
+                           y = NIF_traits_0.75_dsp, by = "bcw_id")
+
+rownames(smash_dsp_cmp) <- smash_dsp_cmp$tx_name
+
+# create matrices for complexheatmaps
+
+## sourmash compare matrix
+smash_dsp_cmp_mat <- as.matrix(smash_dsp_cmp[,1:193])
+rownames(smash_dsp_cmp_mat) <- smash_dsp_cmp$tx_name
+colnames(smash_dsp_cmp_mat) <- rownames(smash_dsp_cmp_mat)
+colnames(smash_dsp_cmp[,194:214])
+## nifscan matrix
+smash_dsp_nif_mat <- as.matrix(smash_dsp_cmp[,199:214])
+rownames(smash_dsp_nif_mat) <- smash_dsp_cmp$tx_name
+colnames(smash_dsp_nif_mat) <- colnames(smash_dsp_cmp[,199:214])
+
+```
+
+#### Create tree objects
+```{r}
+# Create Phylo Tree from sourmash matrix
+
+smash_dsp_k31_tree_mat <- dist2(smash_dsp_cmp_mat)
+smash_dsp_k31_tree_fit <- hclust(smash_dsp_k31_tree_mat)
+smash_dsp_k31_phylo <- as.phylo(smash_dsp_k31_tree_fit)
+
+# set rownames of Kp_nifscan_0.75_dsp_df to match tree tip labels
+rownames(Kp_nifscan_0.75_dsp_df) <- smash_dsp_k31_phylo$tip.label
+```
+
+
+### Dos-Santos Negative (DSN) - Group B
+```{r}
+# DSN Group
+smash_dsn_cmp <- read.csv("./sourmash_data/dsn_dos-santos-negative/pure_iso_dsn_k31_cmp.csv", header = TRUE, check.names = FALSE)
+
+# set rownames to colnames
+rownames(smash_dsn_cmp) <- colnames(smash_dsn_cmp)
+
+# add bcw ids to smash_dsn_cmp data frame
+smash_dsn_cmp$bcw_id <- rownames(smash_dsn_cmp)
+#smash_dsn_cmp$bcw_id
+
+# add genus info to smash_dsn_cmp
+smash_dsn_cmp$genus <- single_isolates$genus[match(smash_dsn_cmp$bcw_id, single_isolates$ID)]
+#smash_dsn_cmp$genus
+
+# Add Genus Colors
+smash_dsn_cmp$genus_colors <- genus_colors$Color[match(smash_dsn_cmp$genus, genus_colors$Genus)]
+#smash_dsn_cmp$genus_colors
+
+# add tx_name Variable to smash_dsn_cmp
+smash_dsn_cmp$tx_name <- paste(smash_dsn_cmp$genus, sprintf("sp. %s", smash_dsn_cmp$bcw_id))
+#smash_dsn_cmp$tx_name
+
+# Add Nifscan data
+## create NIF gene hit Traits Data.Frame
+NIF_traits_0.75_dsn <- subset(Kp_nifscan_0.75_dsn_df, 
+                              select = grep("nif", colnames(Kp_nifscan_0.75_dsn_df)))
+
+## add bcw_id to NIF trait dataframe
+NIF_traits_0.75_dsn$bcw_id <- Kp_nifscan_0.75_dsn_df$bcw_id[match(rownames(NIF_traits_0.75_dsn), Kp_nifscan_0.75_dsn_df$tx_name)]
+
+# Add 15N data
+smash_dsn_cmp$`15N/14N` <- Kp_nifscan_0.75_dsn_df$`15N/14N`[match(smash_dsn_cmp$bcw_id, Kp_nifscan_0.75_dsn_df$bcw_id)]
+
+## perform merge
+smash_dsn_cmp <- left_join(x = smash_dsn_cmp,
+                           y = NIF_traits_0.75_dsn, by = "bcw_id")
+
+rownames(smash_dsn_cmp) <- smash_dsn_cmp$tx_name
+
+# create matrices for complexheatmaps
+
+## sourmash compare matrix
+smash_dsn_cmp_mat <- as.matrix(smash_dsn_cmp[,1:233])
+rownames(smash_dsn_cmp_mat) <- smash_dsn_cmp$tx_name
+colnames(smash_dsn_cmp_mat) <- rownames(smash_dsn_cmp_mat)
+colnames(smash_dsn_cmp[,234:254])
+## nifscan matrix
+smash_dsn_nif_mat <- as.matrix(smash_dsn_cmp[,239:254])
+rownames(smash_dsn_nif_mat) <- smash_dsn_cmp$tx_name
+colnames(smash_dsn_nif_mat) <- colnames(smash_dsn_cmp[,239:254])
+
+# add smash_dsn_cmp data to Kp_nifscan_0.75_dsn_df
+#Kp_nifscan_0.75_dsn_df <- cbind(smash_dsn_cmp_mat, #Kp_nifscan_0.75_dsn_df)
+```
+
+#### Create tree objects
+```{r}
+# Create Phylo Tree from sourmash matrix
+smash_dsn_k31_tree_mat <- dist2(smash_dsn_cmp_mat)
+smash_dsn_k31_tree_fit <- hclust(smash_dsn_k31_tree_mat)
+smash_dsn_k31_phylo <- as.phylo(smash_dsn_k31_tree_fit)
+
+# set rownames of Kp_nifscan_0.75_dsn_df to match tree tip labels
+rownames(Kp_nifscan_0.75_dsn_df) <- smash_dsn_k31_phylo$tip.label
+```
+
+### Semi Dos-Santos (SDS) - Group C
+```{r}
+# SDS Group
+smash_sds_cmp <- read.csv("./sourmash_data/sds_semi-dos-santos/pure_iso_sds_k31_cmp.csv", header = TRUE, check.names = FALSE)
+
+# set rownames to colnames
+rownames(smash_sds_cmp) <- colnames(smash_sds_cmp)
+
+# add bcw ids to smash_sds_cmp data frame
+smash_sds_cmp$bcw_id <- rownames(smash_sds_cmp)
+#smash_sds_cmp$bcw_id
+
+# add genus info to smash_sds_cmp
+smash_sds_cmp$genus <- single_isolates$genus[match(smash_sds_cmp$bcw_id, single_isolates$ID)]
+#smash_sds_cmp$genus
+
+# Add Genus Colors
+smash_sds_cmp$genus_colors <- genus_colors$Color[match(smash_sds_cmp$genus, genus_colors$Genus)]
+#smash_sds_cmp$genus_colors
+
+# add tx_name Variable to smash_sds_cmp
+smash_sds_cmp$tx_name <- paste(smash_sds_cmp$genus, sprintf("sp. %s", smash_sds_cmp$bcw_id))
+#smash_sds_cmp$tx_name
+
+# Add Nifscan data
+## create NIF gene hit Traits Data.Frame
+NIF_traits_0.75_sds <- subset(Kp_nifscan_0.75_sds_df, 
+                              select = grep("nif", colnames(Kp_nifscan_0.75_sds_df)))
+
+## add bcw_id to NIF trait dataframe
+NIF_traits_0.75_sds$bcw_id <- Kp_nifscan_0.75_sds_df$bcw_id[match(rownames(NIF_traits_0.75_sds), Kp_nifscan_0.75_sds_df$tx_name)]
+
+# Add 15N data
+smash_sds_cmp$`15N/14N` <- Kp_nifscan_0.75_sds_df$`15N/14N`[match(smash_sds_cmp$bcw_id, Kp_nifscan_0.75_sds_df$bcw_id)]
+
+## perform merge
+smash_sds_cmp <- left_join(x = smash_sds_cmp,
+                           y = NIF_traits_0.75_sds, by = "bcw_id")
+
+rownames(smash_sds_cmp) <- smash_sds_cmp$tx_name
+
+# create matrices for complexheatmaps
+
+## sourmash compare matrix
+smash_sds_cmp_mat <- as.matrix(smash_sds_cmp[,1:66])
+rownames(smash_sds_cmp_mat) <- smash_sds_cmp$tx_name
+colnames(smash_sds_cmp_mat) <- rownames(smash_sds_cmp_mat)
+colnames(smash_sds_cmp[,67:87])
+## nifscan matrix
+smash_sds_nif_mat <- as.matrix(smash_sds_cmp[,72:87])
+rownames(smash_sds_nif_mat) <- smash_sds_cmp$tx_name
+colnames(smash_sds_nif_mat) <- colnames(smash_sds_cmp[,72:87])
+
+# add smash_sds_cmp data to Kp_nifscan_0.75_sds_df
+#Kp_nifscan_0.75_sds_df <- cbind(smash_sds_cmp_mat, #Kp_nifscan_0.75_sds_df)
+```
+
+#### Create tree objects
+```{r}
+# Create Phylo Tree from sourmash matrix
+smash_sds_k31_tree_mat <- dist2(smash_sds_cmp_mat)
+smash_sds_k31_tree_fit <- hclust(smash_sds_k31_tree_mat)
+smash_sds_k31_phylo <- as.phylo(smash_sds_k31_tree_fit)
+
+# set rownames of Kp_nifscan_0.75_sds_df to match tree tip labels
+rownames(Kp_nifscan_0.75_sds_df) <- smash_sds_k31_phylo$tip.label
+```
+
+```{r}
+head(rownames(smash_dsp_cmp_mat))
+head(rownames(smash_dsp_cmp))
+tail(colnames(smash_dsn_cmp), n = 20)
+```
+
+
+## ComplexHeatmap
+
+### DSP Group
+```{r}
+require(viridisLite)
+
+# Re-order rows of Kp_nifscan_0.75_dsp to match sourmash cmp matrix
+#chm_smash_k31_dsp_cmp_order <- rownames(smash_dsp_cmp_mat)
+#Kp_nifscan_0.75_dsp_mat <- #Kp_nifscan_0.75_dsp_mat[chm_smash_k31_dsp_cmp_order,]
+#
+## Re-order rows of Kp_nifscan_0.75_dsp_df to match sourmash cmp matrix
+#Kp_nifscan_0.75_dsp_df <- #Kp_nifscan_0.75_dsp_df[chm_smash_k31_dsp_cmp_order,]
+
+## SM K31 Mat Color
+chm_sm_k31_col <- inferno(direction = -1, 6)
+
+## NIF GENE Color
+chm_nif_gene_col <- viridis(direction = -1, 6)
+
+## 15N Ratio Color
+chm_N15_col <- inferno(direction = -1, 6)
+
+## Genus Colors
+chm_dsp_genus_col <- smash_dsp_cmp %>%
+  select(genus, genus_colors) %>%
+  arrange(genus) %>%
+  distinct(genus, genus_colors) %>%
+  select(-genus)
+chm_dsp_genus_col <- as.data.frame(chm_dsp_genus_col)
+chm_dsp_genus_col <- as.character(chm_dsp_genus_col[,1])
+
+
+## Sourmash K31 Heatmap
+chm_dsp_sm_k31 <-
+  Heatmap(smash_dsp_cmp_mat,
+          name = "SM K31",
+          width = unit(0, "cm"),
+          cluster_columns = F,
+          row_dend_width = unit(4, "cm"),
+          show_column_names = F,
+          show_row_names = T,
+          row_names_gp = gpar(fontsize = 3.5, fontface = "bold"),
+          col = chm_sm_k31_col,
+          show_heatmap_legend = F
+          )
+
+## Genus Heatmap
+
+chm_dsp_genus <-
+  Heatmap(smash_dsp_cmp$genus,
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          name = "Genus",
+          col = chm_dsp_genus_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(ncol = 1,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topleft"),
+          width = unit(5, "mm"))
+
+## NIF Heatmap
+chm_dsp_nif <- 
+  Heatmap(smash_dsp_nif_mat,
+          name = "HMM Hits",
+          width = unit(6, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_nif_gene_col,
+          show_column_names = T,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 6, 1),
+                                      title = "NIF HMM Hits",
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "discrete",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+## 15N Heatmap
+chm_dsp_N15 <- 
+  Heatmap(smash_dsp_cmp$`15N/14N`,
+          name = "BNF",
+          width = unit(0.5, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_N15_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      title = "BNF (15N/14N Ratio)",
+                                      legend_direction = "vertical",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+chm_dsp_list <- chm_dsp_sm_k31 +
+  chm_dsp_genus +
+  chm_dsp_nif +
+  chm_dsp_N15
+
+chm_dsp <- draw(chm_dsp_list, gap = unit(0.1, "cm"), heatmap_legend_side = "right")
+
+setEPS()
+postscript("./chm_plots/S3_Fig.eps", width = 8, height = 10)
+draw(chm_dsp)
+dev.off()
+```
+
+
+### SDS Group
+```{r}
+require(viridisLite)
+
+# Re-order rows of Kp_nifscan_0.75_dsp to match sourmash cmp matrix
+#chm_smash_k31_sds_cmp_order <- rownames(smash_sds_cmp_mat)
+#Kp_nifscan_0.75_sds_mat <- #Kp_nifscan_0.75_sds_mat[chm_smash_k31_sds_cmp_order,]
+#
+## Re-order rows of Kp_nifscan_0.75_sds_df to match sourmash cmp matrix
+#Kp_nifscan_0.75_sds_df <- #Kp_nifscan_0.75_sds_df[chm_smash_k31_sds_cmp_order,]
+
+
+## SM K31 Mat Color
+chm_sm_k31_col <- inferno(direction = -1, 6)
+
+## NIF GENE Color
+chm_nif_gene_col <- viridis(direction = -1, 6)
+
+## 15N Ratio Color
+chm_N15_col <- inferno(direction = -1, 6)
+
+## Genus Colo
+## Genus Colors
+chm_sds_genus_col <- smash_sds_cmp %>%
+  select(genus, genus_colors) %>%
+  arrange(genus) %>%
+  distinct(genus, genus_colors) %>%
+  select(-genus)
+chm_sds_genus_col <- as.data.frame(chm_sds_genus_col)
+chm_sds_genus_col <- as.character(chm_sds_genus_col[,1])
+
+## Sourmash K31 Heatmap
+chm_sds_sm_k31 <-
+  Heatmap(smash_sds_cmp_mat,
+          name = "SM K31",
+          width = unit(0, "cm"),
+          cluster_columns = F,
+          row_dend_width = unit(4, "cm"),
+          show_column_names = F,
+          show_row_names = T,
+          row_names_gp = gpar(fontsize = 5.5, fontface = "bold"),
+          col = chm_sm_k31_col,
+          show_heatmap_legend = F
+          )
+
+## Genus Heatmap
+
+chm_sds_genus <-
+  Heatmap(smash_sds_cmp$genus,
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          name = "Genus",
+          col = chm_sds_genus_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(ncol = 2,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topleft"),
+          width = unit(5, "mm"))
+
+## NIF Heatmap
+chm_sds_nif <- 
+  Heatmap(smash_sds_nif_mat,
+          name = "HMM Hits",
+          width = unit(6, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_nif_gene_col,
+          show_column_names = T,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      title = "NIF HMM Hits",
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "discrete",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+## 15N Heatmap
+chm_sds_N15 <- 
+  Heatmap(smash_sds_cmp$`15N/14N`,
+          name = "BNF",
+          width = unit(0.5, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_N15_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 4, 1),
+                                      title = "BNF (15N/14N Ratio)",
+                                      legend_direction = "vertical",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+chm_sds_list <- chm_sds_sm_k31 +
+  chm_sds_genus +
+  chm_sds_nif +
+  chm_sds_N15
+
+chm_sds <- draw(chm_sds_list, gap = unit(0.1, "cm"), heatmap_legend_side = "right")
+
+setEPS()
+postscript("./chm_plots/S4_Fig.eps", width = 10, height = 10)
+draw(chm_sds)
+dev.off()
+
+```
+
+
+### DSN Group
+```{r}
+require(viridisLite)
+
+# Re-order rows of Kp_nifscan_0.75_dsp to match sourmash cmp matrix
+#chm_smash_k31_dsn_cmp_order <- rownames(smash_dsn_cmp_mat)
+#Kp_nifscan_0.75_dsn_mat <- #Kp_nifscan_0.75_dsn_mat[chm_smash_k31_dsn_cmp_order,]
+#
+## Re-order rows of Kp_nifscan_0.75_dsn_df to match sourmash cmp matrix
+#Kp_nifscan_0.75_dsn_df <- #Kp_nifscan_0.75_dsn_df[chm_smash_k31_dsn_cmp_order,]
+
+
+## SM K31 Mat Color
+chm_sm_k31_col <- inferno(direction = -1, 6)
+
+## NIF GENE Color
+chm_nif_gene_col <- viridis(direction = -1, 6)
+
+## 15N Ratio Color
+chm_N15_col <- inferno(direction = -1, 6)
+
+## Genus Colors
+chm_dsn_genus_col <- smash_dsn_cmp %>%
+  select(genus, genus_colors) %>%
+  arrange(genus) %>%
+  distinct(genus, genus_colors) %>%
+  select(-genus)
+chm_dsn_genus_col <- as.data.frame(chm_dsn_genus_col)
+chm_dsn_genus_col <- as.character(chm_dsn_genus_col[,1])
+
+## Sourmash K31 Heatmap
+chm_dsn_sm_k31 <-
+  Heatmap(smash_dsn_cmp_mat,
+          name = "SM K31",
+          width = unit(0, "cm"),
+          cluster_columns = F,
+          row_dend_width = unit(4, "cm"),
+          show_column_names = F,
+          show_row_names = T,
+          row_names_gp = gpar(fontsize = 2.8, fontface = "bold"),
+          col = chm_sm_k31_col,
+          show_heatmap_legend = F
+          )
+
+## Genus Heatmap
+
+chm_dsn_genus <-
+  Heatmap(smash_dsn_cmp$genus,
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          name = "Genus",
+          col = chm_dsn_genus_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(ncol = 2,
+                                      labels_gp = gpar(fontsize = 10),
+                                      title_position = "topleft"),
+          width = unit(5, "mm"))
+
+## NIF Heatmap
+chm_dsn_nif <- 
+  Heatmap(smash_dsn_nif_mat,
+          name = "HMM Hits",
+          width = unit(6, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_nif_gene_col,
+          show_column_names = T,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      title = "NIF HMM Hits",
+                                      legend_direction = "horizontal",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "discrete",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+## 15N Heatmap
+chm_dsn_N15 <- 
+  Heatmap(smash_dsn_cmp$`15N/14N`,
+          name = "BNF",
+          width = unit(0.5, "cm"),
+          rect_gp = gpar(col = "black", lwd = 0.3),
+          show_row_names = F,
+          col = chm_N15_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 10, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      title = "BNF (15N/14N Ratio)",
+                                      legend_direction = "vertical",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 8),
+                                      title_position = "topleft"))
+
+chm_dsn_list <- chm_dsn_sm_k31 +
+  chm_dsn_genus +
+  chm_dsn_nif +
+  chm_dsn_N15
+
+chm_dsn <- draw(chm_dsn_list, gap = unit(0.1, "cm"), heatmap_legend_side = "right")
+
+setEPS()
+postscript("./chm_plots/S5_Fig.eps", width = 8, height = 10)
+draw(chm_dsn)
+dev.off()
+
+```
+
+# All single isolates
+
+## Create master dataframe
+```{r}
+# read in smash_k31_cmp matrix for all single isolates
+smash_all_cmp <- read.csv("./sourmash_data/pure_isolate_492_cmp/pure_isolate_k31_cmp_492.csv", header = T, check.names = F)
+
+# make rownames equal to colnames
+rownames(smash_all_cmp) <- colnames(smash_all_cmp)
+
+# add bcw_ids
+smash_all_cmp$bcw_id <- rownames(smash_all_cmp)
+head(smash_all_cmp$bcw_id)
+
+# add genus assignment
+smash_all_cmp$genus <- single_isolates$genus[match(smash_all_cmp$bcw_id, single_isolates$ID)]
+#head(smash_all_cmp$genus)
+
+# add genus colors
+smash_all_cmp$genus_colors <- genus_colors$Color[match(smash_all_cmp$genus, genus_colors$Genus)]
+head(smash_all_cmp$genus_colors)
+
+# add tx_name
+smash_all_cmp$tx_name <- paste(smash_all_cmp$genus, sprintf("sp. %s", smash_all_cmp$bcw_id))
+head(smash_all_cmp$tx_name)
+
+# add 15N data
+smash_all_cmp$`15N/14N` <- N15_data$ratio[match(smash_all_cmp$bcw_id, N15_data$BCW_ID)]
+head(smash_all_cmp$`15N/14N`)
+
+# add NIFscan data
+smash_all_cmp <- left_join(smash_all_cmp, Kp_hmm_0.75_count_df, by = "bcw_id")
+
+# add DS_Group data
+
+## make dataframes with isolate and group assignments
+DSP_isolates <- tibble(bcw_id = Kp_nifscan_0.75_dsp_df$bcw_id, group = "DSP")
+SDS_isolates <- tibble(bcw_id = Kp_nifscan_0.75_sds_df$bcw_id, group = "SDS")
+DSN_isolates <- tibble(bcw_id = Kp_nifscan_0.75_dsn_df$bcw_id, group = "DSN")
+
+## combine the three into one
+DS_Groups <- bind_rows(DSP_isolates, SDS_isolates)
+DS_Groups <- bind_rows(DS_Groups, DSN_isolates)
+
+## save meta_file
+write_csv(DS_Groups, "./genome_metadata/ds_groups.csv", col_names = T)
+
+## add to smash_all_cmp DF
+
+smash_all_cmp <- left_join(smash_all_cmp, DS_Groups, by = "bcw_id")
+
+# add nif group color
+## make data.frame for group colors
+group_colors <- tibble(group = c("DSP", "SDS", "DSN"), color = c("Green", "Blue", "Red"))
+
+## add group color to group by matching
+smash_all_cmp$group_color <- group_colors$color[match(smash_all_cmp$group, group_colors$group)]
+
+```
+
+## Make matrices
+
+```{r}
+# make sourmash cmp matrix
+smash_all_cmp_mat <- as.matrix(smash_all_cmp[,1:492])
+## set colnames and rownames
+rownames(smash_all_cmp_mat) <- smash_all_cmp$tx_name
+colnames(smash_all_cmp_mat) <- smash_all_cmp$tx_name
+colnames(smash_all_cmp[,493:515])
+
+# make nifscan matrix
+smash_all_nif_mat <- as.matrix(smash_all_cmp[,498:513])
+## order the matrix by operon
+smash_all_nif_mat <- smash_all_nif_mat[,Kp_operon_order]
+## set rownames
+rownames(smash_all_nif_mat) <- smash_all_cmp$tx_name
+
+```
+
+## Make complex heatmap
+
+### Heatmap Annotaiton
+```{r}
+## Read in map file
+Kp_hmm_map <- read_tsv("./NIF_operon_metadata/kleb_pneum_nif_regulon.txt", col_names = T)
+colnames(Kp_hmm_map)
+## Nif Operon
+### Make data frames for the annotation objects
+Kp_nif_operon <- data.frame(gene = Kp_hmm_map$gene, operon = Kp_hmm_map$operon)
+rownames(Kp_nif_operon) <- Kp_nif_operon$gene
+Kp_nif_operon <- Kp_nif_operon[Kp_operon_order,]
+Kp_nif_operon <- Kp_nif_operon %>% select(operon)
+
+
+Kp_operon_cha <-
+  HeatmapAnnotation(df = Kp_nif_operon,
+                    col = list(operon = c("nifRLA" = "firebrick2",
+                                          "nifJ" = "dodgerblue2",
+                                          "nifHDK" = "mediumspringgreen",
+                                          "nifEN" = "slateblue2",
+                                          "nifUSVM" = "grey80",
+                                          "nifWF" = "darkturquoise",
+                                          "nifBQ" = "coral1")),
+                    annotation_height = unit(1, "mm"),
+                    annotation_legend_param = list(operon = list(ncol = 7,
+                                                                 title = "NIF Operon",
+                                                                 title_gp = gpar(fontsize = 16),
+                                                                 legend_direction = "horizontal",
+                                                                 labels_gp = gpar(fontsize = 14),
+                                                                 
+                                                                 title_position = "leftcenter")),
+                    show_legend = TRUE)
+```
+
+### Heatmap 
+```{r}
+
+## NIF GENE Color
+chm_nif_gene_col <- viridis(direction = -1, 6)
+
+# group colors for smash_all_group_chm
+chm_all_group_col <- unique(smash_all_cmp$group_color)
+
+## Genus Colors
+chm_all_genus_col <- smash_all_cmp %>%
+  select(genus, genus_colors) %>%
+  arrange(genus) %>%
+  distinct(genus, genus_colors) %>%
+  select(-genus)
+chm_all_genus_col <- as.data.frame(chm_all_genus_col)
+chm_all_genus_col <- as.character(chm_all_genus_col[,1])
+
+## Sourmash K31 Heatmap
+smash_all_k31_chm <-
+  Heatmap(smash_all_nif_mat,
+          name = "SM K31",
+          width = unit(0, "cm"),
+          cluster_columns = T,
+          show_column_dend = F,
+          row_dend_width = unit(1.5, "cm"),
+          show_column_names = F,
+          show_row_names = F,
+          row_names_gp = gpar(fontsize = 1, fontface = "bold"),
+          col = chm_sm_k31_col,
+          show_heatmap_legend = F
+          )
+
+## Genus Heatmap
+
+smash_all_genus_chm <-
+  Heatmap(smash_all_cmp$genus,
+#          rect_gp = gpar(col = "grey90", lwd = 0.1),
+          name = "Genus",
+          col = chm_all_genus_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 14, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(title = "Genus",
+                                      title_gp = gpar(fontsize = 16),
+                                      ncol = 1,
+                                      labels_gp = gpar(fontsize = 14),
+                                      title_position = "topleft"),
+          width = unit(5, "mm"))
+
+## NIF Heatmap
+smash_all_nif_chm <- 
+  Heatmap(smash_all_nif_mat,
+          name = "HMM Hits",
+          width = unit(32, "cm"),
+#          rect_gp = gpar(col = "grey90", lwd = 0.1),
+          show_row_names = F,
+          col = chm_nif_gene_col,
+          show_column_names = T,
+          cluster_columns = F,
+          column_names_gp = gpar(fontsize = 14, fontface = "bold"),
+          column_names_side = "top",
+          bottom_annotation = Kp_operon_cha,
+          heatmap_legend_param = list(at = seq(0, 6, 1),
+                                      legend_direction = "vertical",
+                                      title = "NIF HMM Hits",
+                                      title_gp = gpar(fontsize = 16),
+                                      ncol = 1,
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "discrete",
+                                      labels_gp = gpar(fontsize = 14),
+                                      title_position = "topleft"))
+
+## 15N Heatmap
+smash_all_N15_chm <- 
+  Heatmap(smash_all_cmp$`15N/14N`,
+          name = "BNF",
+          width = unit(0.5, "cm"),
+#          rect_gp = gpar(col = "grey90", lwd = 0.1),
+          show_row_names = F,
+          col = chm_N15_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 14, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(at = seq(0, 5, 1),
+                                      title = "BNF (15N/14N Ratio)",
+                                      title_gp = gpar(fontsize = 16),
+                                      legend_direction = "vertical",
+                                      legend_width = unit(5, "cm"),
+                                      color_bar = "continuous",
+                                      labels_gp = gpar(fontsize = 14),
+                                      title_position = "topleft"))
+## Group Heatmap
+smash_all_group_chm <-
+  Heatmap(smash_all_cmp$group,
+          name = "NIF Group",
+          width = unit(0.5, "cm"),
+#          rect_gp = gpar(col = "grey90", lwd = 0.1),
+          show_row_names = F,
+          col = chm_all_group_col,
+          show_column_names = T,
+          column_names_gp = gpar(fontsize = 14, fontface = "bold"),
+          column_names_side = "top",
+          heatmap_legend_param = list(title = "NIF Group",
+                                      ncol = 1,
+                                      title_gp = gpar(fontsize = 16),
+                                      labels_gp = gpar(fontsize = 14),
+                                      title_position = "topleft"))
+  
+
+
+
+smash_all_list_chm <- smash_all_k31_chm +
+  smash_all_genus_chm +
+  smash_all_nif_chm +
+  smash_all_group_chm
+
+chm_all <- draw(smash_all_list_chm, gap = unit(0.1, "cm"), heatmap_legend_side = "right", annotation_legend_side = "bottom")
+
+setEPS()
+postscript("./chm_plots/Fig3.eps", width = 16, height = 10)
+draw(chm_all)
+dev.off()
+
+
+```
+
+## S6 Table
+```{r}
+# single isolates supp table
+## change _ to - in bcw_id
+#single_isolates$ID <- sub("_", "-", single_isolates$ID)
+single_iso_supp_table <- single_isolates %>% select(ID,
+                                                    asm_length,
+                                                    n_contigs,
+                                                    avg_cov,
+                                                    N50)
+
+# add NIF Group
+single_iso_supp_table$NIF.Group <- DS_Groups$group[match(single_iso_supp_table$ID,
+                                                         DS_Groups$bcw_id)]
+
+# add whole taxonomy to supp table
+single_iso_supp_table <- inner_join(single_iso_supp_table, lca_merged, by = "ID")
+
+# add 'unassigned' to empty cells
+single_iso_supp_table <- as_tibble(apply(single_iso_supp_table, 2, function(x) gsub("^$|^ $", "unassigned", x)))
+
+# reorder based on ascending BCW ID number
+single_iso_supp_table <- arrange(single_iso_supp_table, ID)
+
+#single_iso_supp_table %>% select(genus) %>% filter(genus == "unassigned") %>% count()
+
+# write csv for Supp Table S6
+write_csv(single_iso_supp_table, "./R_output_files/S6_Table.csv")
+```
+
+
+
+
+#### Single Isolates, 15N Ratio Stats
+
+> Calculate the number of Isolates with 15N Ratio >= 1.2
+
+```{r}
+## Count observed number of isolates for 15N/14N ratios above threshold
+smash_all_cmp %>%
+  filter(`15N/14N` >= 1.2) %>%
+  count(`15N/14N`, sort = TRUE, name = "n_obs")
+
+## sum total number of isolates above 15N/14N ratio threshold of 1.2
+smash_all_cmp %>%
+  filter(`15N/14N` >= 1.2) %>% summarise(n_isolates = n())
+
+## Create List of Isolates suriviving this filter
+pangenome_pure_iso_15N_1.2_plus <- smash_all_cmp %>%
+  filter(`15N/14N` >= 1.2) %>%
+  select(bcw_id)
+
+## save as tsv file
+write_tsv(pangenome_pure_iso_15N_1.2_plus, "./R_output_files/pure.iso_pangenome_list_1.2_plus.tsv", col_names = FALSE)
+```
+
+#### Single Isolates, Raoultella
+```{r}
+## subset, selecting Raoultella Isolates
+single_Raoultella <- smash_all_cmp %>%
+  filter(genus == "Raoultella") %>%
+  select("bcw_id")
+single_Raoultella
+
+## save as tsv file
+write_tsv(single_Raoultella, "./R_output_files/single-Raoultella.tsv", col_names = FALSE)
+
+## create genus-metadata
+single_Raoultella_meta <- smash_all_cmp %>%
+  filter(genus == "Raoultella") %>%
+  select("bcw_id", "genus")
+single_Raoultella_meta
+```
+
+#### Single Isolates, Lactococcus
+```{r}
+## subset, selecting Lactococcus Isolates
+single_Lactococcus <- smash_all_cmp %>%
+  filter(genus == "Lactococcus") %>%
+  select("bcw_id")
+single_Lactococcus
+
+## save as tsv file
+write_tsv(single_Lactococcus, "./R_output_files/single-Lactococcus.tsv", col_names = FALSE)
+
+## create genus-metadata
+
+single_Lactococcus_meta <- smash_all_cmp %>%
+  filter(genus == "Lactococcus") %>%
+  select("15N/14N")
+single_Lactococcus_meta
+#"bcw_id", "genus", 
+```
+
+#### Single Isolates, Rahnella
+```{r}
+## subset, selecting Rahnella Isolates
+single_Rahnella <- smash_all_cmp %>%
+  filter(genus == "Rahnella") %>%
+  select("bcw_id")
+single_Rahnella
+
+## save as tsv file
+write_tsv(single_Rahnella, "./R_output_files/single-Rahnella.tsv", col_names = FALSE)
+
+## create genus-metadata
+single_Rahnella_meta <- smash_all_cmp %>%
+  filter(genus == "Rahnella") %>%
+  select("bcw_id", "genus")
+single_Rahnella_meta
+```
+
+#### Single Isolates, Klebsiella
+```{r}
+## subset, selecting Klebsiella Isolates
+single_Klebsiella <- smash_all_cmp %>%
+  filter(genus == "Klebsiella") %>%
+  select("bcw_id")
+single_Klebsiella
+
+## save as tsv file
+write_tsv(single_Klebsiella, "./R_output_files/single-Klebsiella.tsv", col_names = FALSE)
+
+## create genus-metadata
+single_Klebsiella_meta <- smash_all_cmp %>%
+  filter(genus == "Klebsiella") %>%
+  select("bcw_id", "genus")
+single_Klebsiella_meta
+```
+
+#### Single Isolates, Enterobacter
+```{r}
+## subset, selecting Enterobacter Isolates
+single_Enterobacter <- smash_all_cmp %>%
+  filter(genus == "Enterobacter") %>%
+  select("bcw_id")
+single_Enterobacter
+
+## save as tsv file
+write_tsv(single_Enterobacter, "./R_output_files/single-Enterobacter.tsv", col_names = FALSE)
+
+## create genus-metadata
+single_Enterobacter_meta <- smash_all_cmp %>%
+  filter(genus == "Enterobacter") %>%
+  select("bcw_id", "genus")
+single_Enterobacter_meta
+
+## save as tsv file
+write_tsv(single_Enterobacter, "./R_output_files/single-Enterobacter.tsv", col_names = FALSE)
+```
+
+#### Single Isolates, Raoultella, Klebsiella, Rahnella
+```{r}
+## subset, selecting Raoultella, Klebsiella, Rahnella Isolates
+single_meta_rkr <- rbind(single_Raoultella_meta, single_Klebsiella_meta, single_Rahnella_meta)
+single_meta_rkr
+
+## save as tsv file
+write_tsv(single_meta_rkr, "./R_output_files/single-rkr-meta.tsv", col_names = FALSE)
+
+```
+
+
+#### Single Isolates, Genbank Raoultella
+```{r}
+genbank_raoultella <- read.csv("./R_output_files/genbank_raoultella.txt", header = F, col.names = "bcw_id")
+
+genbank_raoultella$genus <- "Raoultella"
+
+# add genbank references to single_meta_rkr
+single_meta_rkr <- rbind(single_meta_rkr, genbank_raoultella)
+
+## save as csv file
+write_csv(single_meta_rkr, "./R_output_files/single-rkr-meta.csv", col_names = FALSE)
+```
+
+#### Single Isolates, Raoultella, Klebsiella
+```{r}
+## subset, selecting Raoultella, Klebsiella, Rahnella Isolates
+single_meta_rk <- rbind(single_Raoultella_meta, single_Klebsiella_meta, genbank_raoultella)
+single_meta_rk
+
+## save as csv file
+write_csv(single_meta_rk, "./R_output_files/single-rk-meta.csv", col_names = FALSE)
+```
+
+#### Dos Santos Positive Isolates
+```{r}
+## subset, selecting DSP Isolates
+single_dsp <- smash_all_cmp %>%
+  filter(group == "DSP") %>%
+  select("bcw_id")
+single_dsp
+
+## save list of isolates as tsv file
+write_tsv(single_dsp, "./R_output_files/single-dsp.tsv", col_names = FALSE)
+
+## create genus-metadata
+single_dsp_meta <- smash_all_cmp %>%
+  filter(group == "DSP") %>%
+  select("bcw_id", "genus")
+single_dsp_meta
+
+
+## Create meta-data file
+#write_csv(single_dsp_meta, "./R_output_files/single-dsp.csv", col_names = TRUE)
+
+
+```
+
+
+### SCOARY
+
+#### Create Scoary Traits Files
+
+##### Raoultella, Klebsiella, Rahnella
+```{r}
+colnames(smash_all_cmp)[473:496]
+
+## grab all Raoultella, Klebsiella, Rahnella
+## Keep bcw_id, nifHDKENB, 15N/14N
+scoary_raou <- smash_all_cmp %>% filter(genus == "Raoultella") %>%
+  select("bcw_id", "genus", "15N/14N", "nifB", "nifD", "nifE", "nifH", "nifK", "nifN")
+
+scoary_kleb <- smash_all_cmp %>% filter(genus == "Klebsiella") %>%
+  select("bcw_id", "genus", "15N/14N", "nifB", "nifD", "nifE", "nifH", "nifK", "nifN")
+
+scoary_rahn <- smash_all_cmp %>% filter(genus == "Rahnella") %>%
+  select("bcw_id", "genus", "15N/14N", "nifB", "nifD", "nifE", "nifH", "nifK", "nifN")
+
+scoary_rkr <- rbind(scoary_raou, scoary_kleb, scoary_rahn)
+
+## Create DS binary variable (Dos Santos): Yes = 1, No = 0
+
+scoary_rkr <- scoary_rkr %>% mutate(DS = if_else(nifB >= 1 &
+                                                nifD >= 1 &
+                                                nifE >= 1 &
+                                                nifH >= 1 &
+                                                nifK >= 1 &
+                                                nifN >= 1, 1, 0))
+
+## Create N-Fixation binary variable (Yes (1) = Greater than or equal to 1.2, No (0) = Below 1.2)
+
+scoary_rkr <- scoary_rkr %>% mutate(N_Fix = if_else(`15N/14N` >= 1.2, 1, 0))
+
+## Filter to select only BCW id, DS-binary and N-fix binary variables
+
+scoary_rkr_traits <- scoary_rkr %>% select("bcw_id", "DS", "N_Fix")
+
+## Add 'genbank_raoultella' outgroup isolates
+
+scoary_rkr_outgroup <- genbank_raoultella %>% select("bcw_id")
+scoary_rkr_outgroup$DS <- 0
+scoary_rkr_outgroup$N_Fix <- 0
+
+scoary_rkr_traits <- rbind(scoary_rkr_traits, scoary_rkr_outgroup)
+
+## Save to CSV output file for Scoary
+#write_csv(scoary_rkr_traits, "./R_output_files/scoary_rkr_traits.csv", col_names = T)
+  
+```
+
